@@ -6,6 +6,7 @@
 // Usage (from the repository root):
 //   node_modules\electron\dist\electron.exe tools\diag-usb-noise
 //   set DIAG_FILTER=1 first to measure through DeskPTT's RX filters.
+//   set DIAG_DEVICE=<regex> to measure another input (e.g. "realtek" for the PC microphone).
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
@@ -20,7 +21,8 @@ ipcMain.on('done', () => app.quit());
 app.whenReady().then(() => {
   const w = new BrowserWindow({ show: false, webPreferences: { nodeIntegration: true, contextIsolation: false } });
   const html = path.join(__dirname, 'index.html');
-  fs.writeFileSync(html, `<script>const FILTER = ${process.env.DIAG_FILTER ? 'true' : 'false'}; (${renderer.toString()})()</script>`);
+  const device = JSON.stringify(process.env.DIAG_DEVICE || '');
+  fs.writeFileSync(html, `<script>const FILTER = ${process.env.DIAG_FILTER ? 'true' : 'false'}; const DEVICE = ${device}; (${renderer.toString()})()</script>`);
   w.loadFile(html);
 });
 
@@ -33,7 +35,7 @@ function renderer() {
       pre.getTracks().forEach((t) => t.stop());
       const devs = await navigator.mediaDevices.enumerateDevices();
       const dev = devs.find((d) => d.kind === 'audioinput' && !['default', 'communications'].includes(d.deviceId)
-        && /usb (pnp )?(audio|sound)|digirig|c-media/i.test(d.label));
+        && (DEVICE ? new RegExp(DEVICE, 'i') : /usb (pnp )?(audio|sound)|digirig|c-media/i).test(d.label));
       if (!dev) { log('Interface input not found'); return ipcRenderer.send('done'); }
       log('Input: ' + dev.label + (FILTER ? ' (through RX filters)' : ''));
       const stream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: dev.deviceId }, echoCancellation: false, autoGainControl: false, noiseSuppression: false } });
