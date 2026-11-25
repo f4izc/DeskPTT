@@ -86,7 +86,4 @@ after `tailMs`. Any crash, reload, window close or COM port loss forces PTT off.
 
 ## Ideas / not done yet
 
-- Windows on ARM64 build (prebuilds exist for both native modules; add `--arm64`, test).
-- macOS / Linux ports (signing, Accessibility permission, Wayland has no global hook, device naming).
-- Custom application icon, code signing.
-- CTCSS/tone-squelch is handled by the radio, not by DeskPTT.
+See [`BACKLOG.md`](../BACKLOG.md) (planned features, ideas, and what is deliberately out of scope).

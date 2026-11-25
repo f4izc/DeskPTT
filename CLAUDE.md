@@ -5,6 +5,7 @@ through a Digirig-like USB interface, and keys PTT on the interface's COM port (
 Author: Stephane Tauziede (F4IZC). License: Apache-2.0 (keep SPDX headers on new source files).
 
 Read `docs/DEVELOPMENT.md` first: architecture, audio graph, and the pitfalls already solved.
+Future work lives in `BACKLOG.md`: add new ideas there, and move items to `CHANGELOG.md` when shipped.
 
 ## Conventions
 
