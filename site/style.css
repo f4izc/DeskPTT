@@ -40,6 +40,7 @@ section { padding: 64px 0; }
 .nav nav { display: flex; gap: 22px; }
 .nav nav a { color: var(--muted); font-size: 15px; }
 .nav nav a:hover { color: var(--text); text-decoration: none; }
+.nav nav a.lang { border: 1px solid var(--line); border-radius: 6px; padding: 1px 8px; font-size: 13px; font-weight: 600; }
 
 /* Hero */
 .hero { padding: 72px 0 56px; background: radial-gradient(900px 420px at 80% 0%, rgba(74, 159, 216, .16), transparent 70%); }

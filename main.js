@@ -220,8 +220,8 @@ async function listPorts() {
     return ports.map((p) => ({
       path: p.path,
       label: p.friendlyName || [p.path, p.manufacturer].filter(Boolean).join(' — '),
-      // Digirig = puce Silicon Labs CP2102 (VID 10C4)
-      likelyDigirig: /^10c4$/i.test(p.vendorId || '') || /silicon lab|cp210/i.test(`${p.manufacturer} ${p.friendlyName}`),
+      // Puce Silicon Labs CP210x (VID 10C4), courante sur les interfaces radio
+      likelyInterface: /^10c4$/i.test(p.vendorId || '') || /silicon lab|cp210/i.test(`${p.manufacturer} ${p.friendlyName}`),
     }));
   } catch (e) {
     setPortStatus({ error: { key: 'err.listPorts', args: { msg: e.message } } });

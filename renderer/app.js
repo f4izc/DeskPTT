@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 Stephane Tauziede (F4IZC)
 // DeskPTT — interface et routage audio
-//   Réception : entrée Digirig  → sortie casque
-//   Émission  : micro casque    → sortie Digirig (ouverte seulement en PTT)
+//   Réception : entrée interface → sortie casque
+//   Émission  : micro casque    → sortie interface (ouverte seulement en PTT)
 
 const api = window.radio;
 const $ = (id) => document.getElementById(id);
@@ -18,7 +18,7 @@ let totSeconds = 0;
 const rx = { ctx: null, stream: null, gain: null, mute: null, analyser: null };
 const tx = { ctx: null, stream: null, gain: null, gate: null, analyser: null };
 
-const DIGIRIG_RE = /usb (pnp )?(audio|sound)|digirig|c-media|cm10\d|cm11\d/i;
+const INTERFACE_RE = /usb (pnp )?(audio|sound)|digirig|c-media|cm10\d|cm11\d/i;
 const VIRTUAL_RE = /cable|virtual|voicemeeter|vb-audio|stereo mix|mixage/i;
 
 // ---------------------------------------------------------------- Bandeau
@@ -44,9 +44,9 @@ function pickSaved(list, saved) {
 function guessDefault(key, list) {
   const isRig = key.startsWith('rig');
   const real = list.filter((d) => d.deviceId !== 'default' && d.deviceId !== 'communications');
-  if (isRig) return real.find((d) => DIGIRIG_RE.test(d.label)) || null;
-  // Casque : jamais le Digirig, même s'il est le périphérique par défaut de Windows.
-  const ok = (d) => !DIGIRIG_RE.test(d.label) && !VIRTUAL_RE.test(d.label);
+  if (isRig) return real.find((d) => INTERFACE_RE.test(d.label)) || null;
+  // Casque : jamais l'interface radio, même s'il est le périphérique par défaut de Windows.
+  const ok = (d) => !INTERFACE_RE.test(d.label) && !VIRTUAL_RE.test(d.label);
   const def = list.find((d) => d.deviceId === 'default');
   if (def && ok(def)) return def;
   return real.find(ok) || null;
@@ -135,7 +135,7 @@ async function startRx() {
     rx.mute = rx.ctx.createGain();
     rx.mute.gain.value = pttOn && settings.muteRxDuringTx ? 0 : 1;
     // Filtres coupe-bande contre le sifflement USB : bruit à 1 kHz (une trame
-    // USB par milliseconde) et ses harmoniques, capté par la puce son du Digirig.
+    // USB par milliseconde) et ses harmoniques, capté par la puce son de l'interface.
     let node = src;
     rx.notches = [];
     for (const f of [1000, 2000, 3000, 4000]) {
@@ -250,7 +250,7 @@ function wireRxFilter() {
 }
 
 // Après l'émission, l'écoute ne revient qu'une fois le PTT retombé (traîne)
-// plus une marge : le poste et le Digirig produisent des transitoires au
+// plus une marge : le poste et l'interface produisent des transitoires au
 // passage émission → réception, qu'on ne veut pas entendre dans le casque.
 const RX_RETURN_MARGIN_MS = 400;
 
@@ -303,10 +303,10 @@ const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 // ---------------------------------------------------------------- Vues
 
 // Nom court d'un périphérique pour le résumé : « Microphone (2- USB PnP Sound
-// Device) (0d8c:013c) » → « Digirig », « Haut-parleurs (Realtek(R) Audio) » → « Realtek(R) Audio ».
+// Device) (0d8c:013c) » → « Interface », « Haut-parleurs (Realtek(R) Audio) » → « Realtek(R) Audio ».
 function shortName(dev) {
   if (!dev) return '—';
-  if (DIGIRIG_RE.test(dev.label)) return 'Digirig';
+  if (INTERFACE_RE.test(dev.label)) return t('dev.interface');
   let s = dev.label.replace(/\s*\([0-9a-f]{4}:[0-9a-f]{4}\)\s*$/i, '');
   const isDefault = /^(default|par défaut|communications?)\s*-\s*/i.test(s);
   s = s.replace(/^(default|par défaut|communications?)\s*-\s*/i, '');
@@ -443,13 +443,13 @@ async function refreshPorts() {
   const sel = $('serialPath');
   sel.innerHTML = '';
   sel.append(new Option(t('port.none'), ''));
-  for (const p of ports) sel.append(new Option(p.label + (p.likelyDigirig ? '  ★ Digirig' : ''), p.path));
+  for (const p of ports) sel.append(new Option(p.label + (p.likelyInterface ? '  ★' : ''), p.path));
 
   if (settings.serialPath && ports.some((p) => p.path === settings.serialPath)) {
     sel.value = settings.serialPath;
   } else if (!settings.serialPath) {
     // Sélection automatique seulement s'il n'y a qu'un seul candidat.
-    const candidates = ports.filter((p) => p.likelyDigirig);
+    const candidates = ports.filter((p) => p.likelyInterface);
     const guess = candidates.length === 1 ? candidates[0] : null;
     sel.value = '';
     if (candidates.length > 1) {
@@ -461,7 +461,7 @@ async function refreshPorts() {
       api.openPort(guess.path);
     }
   } else {
-    // Port mémorisé absent (Digirig débranché ?) : on le garde en mémoire.
+    // Port mémorisé absent (interface débranchée ?) : on le garde en mémoire.
     sel.append(new Option(t('port.absent', { port: settings.serialPath }), settings.serialPath));
     sel.value = settings.serialPath;
   }
@@ -568,7 +568,7 @@ function bindSettings(hookOk) {
   };
   vol('rxVolume', 'rx');
 
-  // Niveau d'émission en dB : la sortie du Digirig attaque l'entrée micro du
+  // Niveau d'émission en dB : la sortie de l'interface attaque l'entrée micro du
   // poste, il faut donc une forte atténuation et un réglage fin.
   const txIn = $('txGainDb');
   const txOut = $('txGainDbOut');

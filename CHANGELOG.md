@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1 — 2026-11-26
+
+- Generic wording in the app: "interface" instead of the Digirig brand (device labels, COM port, RTS,
+  compact summary, About). Ports with a Silicon Labs CP210x chip are still marked with a ★.
+- Website available in French: https://deskptt.f4izc.com/fr/ (screenshots refreshed).
+- GitHub Actions updated to versions running on Node 24.
+
 ## 1.1.0 — 2026-11-25
 
 - **Radio VOX mode** for interfaces that cannot key the radio: *About → Settings → Transmit control*.

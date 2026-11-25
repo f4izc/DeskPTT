@@ -5,11 +5,6 @@ Safety rule for every item: anything that can key the transmitter must fail to "
 
 ## Planned
 
-### Generic interface wording in the app
-The app UI still names the Digirig ("Radio audio (Digirig → PC)", "RTS (Digirig default)", "★ Digirig",
-compact summary "Digirig → …"). Replace it with generic "interface" wording in `renderer/i18n.js` (EN + FR),
-keep the ★ marker for CP210x ports, then retake the screenshots in `site/img/` and the README.
-
 ### PTT through the CM108 GPIO (HID)
 Many CM108/CM119-based interfaces (AllStar-style, DMK URI, home-made boards) have no USB-serial chip:
 PTT is wired to a GPIO pin of the sound chip itself, usually **GPIO3**, driven through a USB HID output report.
@@ -32,8 +27,7 @@ global hotkey, serial port naming (`/dev/cu.*`), device labels, a `.dmg` built b
 - Windows on ARM64 build (prebuilds exist for both native modules; add `--arm64`, test).
 - Linux port (no global hook under Wayland, device naming).
 - Code signing for the Windows installer (avoid the SmartScreen warning).
-- French version of the website.
-- Update the GitHub Actions to versions running on Node 24 (Node 20 deprecation warning).
+- French screenshots for the French website (today they show the English UI).
 
 ## Not planned
 

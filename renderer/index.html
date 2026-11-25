@@ -40,7 +40,7 @@
 
     <section class="card advanced-only">
       <h2><span class="dot rx"></span><span data-i18n="rx.title">Receive</span> <small data-i18n="rx.sub">radio → computer</small></h2>
-      <label><span data-i18n="rx.src">Radio audio (Digirig → PC)</span>
+      <label><span data-i18n="rx.src">Radio audio (interface → PC)</span>
         <span class="sub" data-i18n="rx.srcHint"></span>
         <select id="rigIn" data-kind="audioinput"></select>
       </label>
@@ -61,7 +61,7 @@
       <label><span data-i18n="tx.mic">Computer microphone</span>
         <select id="headsetIn" data-kind="audioinput"></select>
       </label>
-      <label><span data-i18n="tx.out">To the radio (PC → Digirig)</span>
+      <label><span data-i18n="tx.out">To the radio (PC → interface)</span>
         <span class="sub" data-i18n="tx.outHint"></span>
         <select id="rigOut" data-kind="audiooutput"></select>
       </label>
@@ -91,7 +91,7 @@
     <section class="card wide advanced-only">
       <h2 id="setTitle">PTT settings</h2>
       <div class="grid">
-        <label class="ptt-only"><span data-i18n="set.port">Digirig COM port</span>
+        <label class="ptt-only"><span data-i18n="set.port">Interface COM port</span>
           <span class="inline">
             <select id="serialPath"></select>
             <button id="refreshPorts" type="button" class="ghost" data-i18n-title="set.refresh">↻</button>
@@ -99,7 +99,7 @@
         </label>
         <label class="ptt-only"><span data-i18n="set.line">Control line</span>
           <select id="pttLine">
-            <option value="rts" data-i18n="set.rtsDefault">RTS (Digirig default)</option>
+            <option value="rts" data-i18n="set.rtsDefault">RTS (most interfaces)</option>
             <option value="dtr">DTR</option>
           </select>
         </label>

@@ -1,0 +1,223 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Copyright 2026 Stephane Tauziede (F4IZC) -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeskPTT — Votre poste FM, depuis votre bureau</title>
+  <meta name="description" content="DeskPTT transforme votre PC Windows en micro, haut-parleur et PTT de bureau pour votre émetteur-récepteur FM VHF/UHF, via une interface audio USB. Logiciel libre, Apache 2.0.">
+  <meta property="og:title" content="DeskPTT — Votre poste FM, depuis votre bureau">
+  <meta property="og:description" content="Micro, haut-parleur et PTT de bureau pour les postes FM VHF/UHF via une interface audio USB. Libre et open source, pour Windows 10/11.">
+  <meta property="og:image" content="https://deskptt.f4izc.com/img/advanced.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <link rel="alternate" hreflang="en" href="https://deskptt.f4izc.com/">
+  <link rel="alternate" hreflang="fr" href="https://deskptt.f4izc.com/fr/">
+  <link rel="icon" href="../icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top"><img src="../icon.svg" alt="" width="28" height="28">DeskPTT</a>
+      <nav>
+        <a href="#fonctions">Fonctions</a>
+        <a href="#demarrage">Démarrage rapide</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/f4izc/DeskPTT">GitHub</a>
+        <a class="lang" href="../" hreflang="en" lang="en" title="English version">EN</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-in">
+        <div class="hero-text">
+          <p class="eyebrow">Libre et open source · Par et pour les radioamateurs</p>
+          <h1>Votre poste FM,<br>depuis votre bureau.</h1>
+          <p class="lead">DeskPTT transforme votre PC Windows en micro, haut-parleur et PTT de bureau pour votre
+            émetteur-récepteur FM VHF/UHF, via une <strong>interface audio USB</strong>.
+            Plus besoin d'un micro à main supplémentaire.</p>
+          <div class="cta">
+            <a class="btn primary" href="https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Télécharger pour Windows
+            </a>
+            <a class="btn" href="#demarrage">Démarrage rapide</a>
+          </div>
+          <p class="meta">Windows 10 / 11 (64 bits) · macOS en projet · Apache 2.0 ·
+            <a href="https://github.com/f4izc/DeskPTT/releases">toutes les versions</a></p>
+        </div>
+        <figure class="hero-shot">
+          <img src="../img/compact.png" width="460" height="313" alt="Vue compacte de DeskPTT : résumé réception et émission, grand bouton PTT et bouton T-CALL">
+        </figure>
+      </div>
+    </section>
+
+    <section class="scope">
+      <div class="wrap scope-grid">
+        <div class="pill-card">
+          <h3>🖥️ Windows 10 et 11</h3>
+          <p>Installeur 64 bits, construit publiquement par GitHub Actions. Une version macOS est en projet.</p>
+        </div>
+        <div class="pill-card">
+          <h3>🎙️ Son + PTT, pas de CAT</h3>
+          <p>DeskPTT fait passer le son dans les deux sens et commande l'émission. Fréquence, mode et mémoires se
+            règlent sur le poste : c'est exactement ce dont ont besoin la plupart des mobiles et portatifs FM VHF/UHF,
+            avec ou sans prise CAT.</p>
+        </div>
+        <div class="pill-card">
+          <h3>🔌 Interfaces audio USB</h3>
+          <p>Toute interface vue comme une carte son USB avec un port COM dont la ligne RTS ou DTR commande le PTT.
+            Sinon, le VOX du poste prend le relais.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="fonctions" class="features">
+      <div class="wrap">
+        <h2>Tout ce qu'il faut pour trafiquer en FM depuis le PC de la station</h2>
+        <div class="feat-grid">
+          <div class="feat"><span class="ic">🔊</span><h3>Réception</h3>
+            <p>Le son du poste dans vos haut-parleurs ou votre casque, avec réglage du volume et un filtre contre le
+              sifflement USB à 1&nbsp;kHz des puces son bon marché.</p></div>
+          <div class="feat"><span class="ic">🎤</span><h3>Émission</h3>
+            <p>Le micro de votre PC vers le poste, avec un niveau réglé en dB, un vumètre et une réduction de bruit
+              optionnelle.</p></div>
+          <div class="feat"><span class="ic">⌨️</span><h3>Le PTT à votre façon</h3>
+            <p>Bouton à l'écran ou raccourci global — touche du clavier ou bouton latéral de souris — qui marche même
+              quand une autre application a le focus. Maintenir ou bascule, ou bouton VOX / MUTE pour le VOX du poste.</p></div>
+          <div class="feat"><span class="ic">📡</span><h3>Pensé pour les relais</h3>
+            <p>Bouton T-CALL (tonalité 1750&nbsp;Hz), coupure automatique (TOT) et traîne PTT réglable.</p></div>
+          <div class="feat"><span class="ic">🛡️</span><h3>Sécurité d'abord</h3>
+            <p>Le PTT retombe en cas de plantage, de rechargement, de perte du port ou à la fermeture. Les lignes sont
+              baissées dès l'ouverture du port.</p></div>
+          <div class="feat"><span class="ic">🧩</span><h3>Simple ou détaillé</h3>
+            <p>Basculez entre les vues Compacte et Avancée. Interface en français et en anglais.</p></div>
+        </div>
+
+        <figure class="shot-big">
+          <img src="../img/advanced.png" width="884" height="829" loading="lazy" alt="Vue avancée de DeskPTT : choix des périphériques de réception et d'émission, volume et niveau, boutons PTT et T-CALL, réglages PTT">
+          <figcaption>Vue avancée (ici en anglais) : choix de chaque périphérique, niveaux, ligne PTT, mode, TOT, traîne et raccourci.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="demarrage" class="quick">
+      <div class="wrap">
+        <h2>Démarrage rapide</h2>
+        <p class="sub">Environ cinq minutes, du téléchargement à votre premier passage en émission.</p>
+        <ol class="steps">
+          <li>
+            <h3>Branchez l'interface</h3>
+            <p>Reliez l'interface audio à un port USB et à la prise micro/haut-parleur ou data de votre poste. Windows
+              affiche une carte son USB (souvent <em>USB PnP Sound Device</em>) et un port COM. Si vous utilisez VARA,
+              c'est le même port.</p>
+          </li>
+          <li>
+            <h3>Installez DeskPTT</h3>
+            <p><a href="https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe">Téléchargez l'installeur</a>
+              et lancez-le. Il n'est pas signé : si SmartScreen affiche <em>Windows a protégé votre ordinateur</em>,
+              cliquez sur <em>Informations complémentaires → Exécuter quand même</em>. Vous pouvez vérifier le fichier
+              avec le <code>.sha256</code> publié dans la release.</p>
+          </li>
+          <li>
+            <h3>Passez l'interface en français</h3>
+            <p>L'application démarre en anglais : bouton <strong>i</strong> en haut à droite → <em>Settings</em> →
+              <em>Language</em> = <strong>Français</strong>.</p>
+          </li>
+          <li>
+            <h3>Choisissez les périphériques audio</h3>
+            <p>Windows nomme l'interface du point de vue de l'ordinateur :</p>
+            <ul>
+              <li><strong>Réception</strong> — <em>Son du poste</em> : le <strong>Microphone</strong> de l'interface ;
+                <em>Haut-parleur ou casque de l'ordinateur</em> : votre casque.</li>
+              <li><strong>Émission</strong> — <em>Microphone de l'ordinateur</em> : votre micro ;
+                <em>Vers le poste</em> : les <strong>Haut-parleurs</strong> de l'interface.</li>
+            </ul>
+            <p>DeskPTT propose des choix par défaut cohérents et ne prend jamais l'interface pour votre casque.</p>
+          </li>
+          <li>
+            <h3>Choisissez le port COM</h3>
+            <p>Dans <em>Réglages PTT</em>, sélectionnez le port COM de l'interface et la ligne qui commande le PTT,
+              en général <strong>RTS</strong>. La pastille en haut passe au vert :
+              <em>Port COM : COMx (RTS)</em>. Pas de PTT sur votre interface ? Passez en mode
+              <strong>VOX du poste</strong> (voir la FAQ).</p>
+          </li>
+          <li>
+            <h3>Réglez un raccourci (facultatif)</h3>
+            <p>Cliquez sur <em>Assigner…</em> puis appuyez sur une touche ou un bouton latéral de souris. Il passe le
+              poste en émission même quand vous êtes dans une autre application.</p>
+          </li>
+          <li>
+            <h3>Réglez le niveau d'émission</h3>
+            <p>Passez en émission sur une fréquence libre ou sur une charge fictive et demandez un report. Partez de
+              <strong>−26&nbsp;dB</strong> et ajustez le curseur <em>Niveau vers le poste</em> : les entrées des
+              interfaces sont sensibles, un petit réglage suffit.</p>
+          </li>
+          <li>
+            <h3>Bon trafic</h3>
+            <p>Passez en vue <em>Compacte</em> et gardez DeskPTT dans un coin de l'écran. Utilisez
+              <strong>T-CALL</strong> pour ouvrir les relais qui demandent une tonalité 1750&nbsp;Hz.</p>
+          </li>
+        </ol>
+        <p class="more">Plus de détails : <a href="https://github.com/f4izc/DeskPTT/blob/main/docs/GUIDE.fr.md">guide d'utilisation en français</a> ·
+          <a href="https://github.com/f4izc/DeskPTT#readme">README (anglais)</a></p>
+      </div>
+    </section>
+
+    <section id="faq" class="faq">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Quels postes sont compatibles ?</summary>
+          <p>Tout émetteur-récepteur auquel l'interface peut envoyer du son et commander l'émission : la plupart des
+            mobiles et portatifs FM VHF/UHF. DeskPTT a été développé avec un Icom ID-5200. Il n'utilise pas le CAT :
+            le modèle de poste importe peu, pourvu que le câble soit le bon.</p>
+          <p>L'interface audio doit aussi pouvoir commander le PTT : DeskPTT le fait par une ligne d'un port COM
+            (RTS ou DTR), comme sur les interfaces qui associent une puce son USB de type CM108 à une puce USB-série.
+            Le PTT par la broche GPIO de la puce CM108 n'est pas encore pris en charge. Si votre interface ne peut pas
+            passer le poste en émission, passez DeskPTT en mode <strong>VOX du poste</strong> (À propos → Réglages →
+            Commande d'émission) : le bouton PTT devient <strong>VOX / MUTE</strong> et ouvre ou coupe le son envoyé
+            au poste, dont le VOX déclenche l'émission.</p>
+        </details>
+        <details>
+          <summary>J'entends un sifflement aigu.</summary>
+          <p>Beaucoup de puces son USB laissent passer le bruit de trame USB à 1&nbsp;kHz. Gardez le <em>Filtre
+            anti-sifflement USB</em> coché (activé par défaut) : il coupe 1 à 4&nbsp;kHz et filtre au-dessus de
+            3,4&nbsp;kHz.</p>
+        </details>
+        <details>
+          <summary>Puis-je utiliser DeskPTT et VARA en même temps ?</summary>
+          <p>Non : un seul programme à la fois peut ouvrir le port COM. Fermez l'un avant d'utiliser l'autre.</p>
+        </details>
+        <details>
+          <summary>Mac ou Linux ?</summary>
+          <p>Windows 10/11 x64 aujourd'hui. Une version macOS est en projet ; le code est ouvert si vous voulez aider.</p>
+        </details>
+        <details>
+          <summary>Est-ce sûr pour mon émetteur ?</summary>
+          <p>DeskPTT est conçu pour retomber en « PTT coupé » : plantage, rechargement, port débranché ou fermeture
+            relâchent tous le PTT, et le TOT coupe les émissions trop longues. Cela reste un logiciel expérimental pour
+            le radioamateurisme : vous restez responsable de votre station et de vos émissions.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <p><img src="../icon.svg" alt="" width="20" height="20"> <strong>DeskPTT</strong> — conçu par un radioamateur,
+        pour les radioamateurs. Stephane Tauziede, F4IZC. Vibecodé avec Claude.</p>
+      <p>Logiciel libre sous <a href="https://github.com/f4izc/DeskPTT/blob/main/LICENSE">licence Apache 2.0</a> ·
+        <a href="https://github.com/f4izc/DeskPTT/blob/main/THIRD_PARTY_NOTICES.md">licences tierces</a> ·
+        <a href="https://github.com/f4izc/DeskPTT">code source</a> ·
+        <a href="https://github.com/f4izc/DeskPTT/issues">signaler un problème</a></p>
+      <p class="small">Icom, Windows et les autres noms cités sont des marques de leurs propriétaires respectifs.
+        DeskPTT n'est affilié à aucun d'eux. Aucun traceur, aucun cookie sur cette page.</p>
+    </div>
+  </footer>
+</body>
+</html>
