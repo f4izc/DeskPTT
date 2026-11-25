@@ -1,0 +1,8 @@
+node_modules/
+dist/
+tools/diag-usb-noise/result.txt
+tools/diag-usb-noise/index.html
+*.log
+.DS_Store
+Thumbs.db
+.claude/settings.local.json

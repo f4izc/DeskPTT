@@ -1,0 +1,158 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Copyright 2026 Stephane Tauziede (F4IZC) -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeskPTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>DeskPTT</h1>
+    <div class="chips">
+      <span id="chipPort" class="chip">COM port: —</span>
+      <span id="chipKey" class="chip advanced-only">Hotkey: —</span>
+      <div class="seg" role="group" data-i18n-aria="view.group">
+        <button id="viewAdvanced" type="button" data-i18n="view.advanced">Advanced</button>
+        <button id="viewCompact" type="button" data-i18n="view.compact">Compact</button>
+      </div>
+      <button id="aboutBtn" type="button" class="about-btn" data-i18n-title="about.button" data-i18n-aria="about.button">i</button>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main>
+    <section class="card wide compact-only summary">
+      <div class="sum-row"><span class="dot rx"></span><span class="sum-k">RX</span>
+        <span id="sumRx" class="sum-v"></span>
+        <div class="meter mini"><div id="rxMeterC" class="bar"></div></div>
+      </div>
+      <div class="sum-row"><span class="dot tx"></span><span class="sum-k">TX</span>
+        <span id="sumTx" class="sum-v"></span>
+        <div class="meter mini"><div id="txMeterC" class="bar"></div></div>
+      </div>
+      <div id="sumPtt" class="sum-foot"></div>
+    </section>
+
+    <section class="card advanced-only">
+      <h2><span class="dot rx"></span><span data-i18n="rx.title">Receive</span> <small data-i18n="rx.sub">radio → computer</small></h2>
+      <label><span data-i18n="rx.src">Radio audio (Digirig → PC)</span>
+        <span class="sub" data-i18n="rx.srcHint"></span>
+        <select id="rigIn" data-kind="audioinput"></select>
+      </label>
+      <label><span data-i18n="rx.out">Computer speaker or headset</span>
+        <select id="headsetOut" data-kind="audiooutput"></select>
+      </label>
+      <label class="row"><span data-i18n="rx.volume">Volume</span>
+        <input id="rxVolume" type="range" min="0" max="2" step="0.01">
+        <output id="rxVolumeOut"></output>
+      </label>
+      <div class="meter"><div id="rxMeter" class="bar"></div></div>
+      <label class="check"><input id="muteRxDuringTx" type="checkbox"> <span data-i18n="rx.mute"></span></label>
+      <label class="check"><input id="rxNotch" type="checkbox"> <span data-i18n="rx.notch"></span></label>
+    </section>
+
+    <section class="card advanced-only">
+      <h2><span class="dot tx"></span><span data-i18n="tx.title">Transmit</span> <small data-i18n="tx.sub">computer → radio</small></h2>
+      <label><span data-i18n="tx.mic">Computer microphone</span>
+        <select id="headsetIn" data-kind="audioinput"></select>
+      </label>
+      <label><span data-i18n="tx.out">To the radio (PC → Digirig)</span>
+        <span class="sub" data-i18n="tx.outHint"></span>
+        <select id="rigOut" data-kind="audiooutput"></select>
+      </label>
+      <label class="row"><span data-i18n="tx.level">Level to radio</span>
+        <input id="txGainDb" type="range" min="-50" max="6" step="0.5">
+        <output id="txGainDbOut" class="db"></output>
+      </label>
+      <label class="meter-label" data-i18n="tx.micLevel">Microphone level</label>
+      <div class="meter"><div id="txMeter" class="bar"></div></div>
+      <label class="check"><input id="noiseSuppression" type="checkbox"> <span data-i18n="tx.ns"></span></label>
+    </section>
+
+    <section class="ptt-zone">
+      <div class="ptt-row">
+        <button id="ptt" class="ptt" type="button" aria-pressed="false">
+          <span class="ptt-label">PTT</span>
+          <span id="pttSub" class="ptt-sub">Receive</span>
+        </button>
+        <button id="tcall" class="ptt tcall" type="button" aria-pressed="false" data-i18n-title="tcall.title">
+          <span class="ptt-label">T-CALL</span>
+          <span class="ptt-sub">1750 Hz</span>
+        </button>
+      </div>
+      <p id="pttHint" class="hint"></p>
+    </section>
+
+    <section class="card wide advanced-only">
+      <h2 data-i18n="set.title">PTT settings</h2>
+      <div class="grid">
+        <label><span data-i18n="set.port">Digirig COM port</span>
+          <span class="inline">
+            <select id="serialPath"></select>
+            <button id="refreshPorts" type="button" class="ghost" data-i18n-title="set.refresh">↻</button>
+          </span>
+        </label>
+        <label><span data-i18n="set.line">Control line</span>
+          <select id="pttLine">
+            <option value="rts" data-i18n="set.rtsDefault">RTS (Digirig default)</option>
+            <option value="dtr">DTR</option>
+          </select>
+        </label>
+        <label><span data-i18n="set.mode">Mode</span>
+          <select id="mode">
+            <option value="hold" data-i18n="mode.hold">Hold to talk</option>
+            <option value="toggle" data-i18n="mode.toggle">Toggle (press = on/off)</option>
+          </select>
+        </label>
+        <label><span data-i18n="set.tot">Timeout, TOT (s, 0 = none)</span>
+          <input id="totSeconds" type="number" min="0" max="3600" step="10">
+        </label>
+        <label><span data-i18n="set.tail">PTT tail (ms)</span>
+          <input id="tailMs" type="number" min="0" max="1000" step="10">
+        </label>
+        <label><span data-i18n="set.hotkey">Global hotkey</span>
+          <span class="inline">
+            <span id="hotkeyLabel" class="keycap">None</span>
+            <button id="assignKey" type="button" data-i18n="set.assign">Assign…</button>
+            <button id="clearKey" type="button" class="ghost" data-i18n="set.clear">Clear</button>
+          </span>
+        </label>
+      </div>
+      <p class="note" data-i18n="set.note"></p>
+    </section>
+  </main>
+
+  <dialog id="about" class="about">
+   <div class="about-body">
+    <h2 data-i18n="about.title">About DeskPTT</h2>
+    <p id="aboutVersion" class="muted"></p>
+    <p class="tagline" data-i18n="about.tagline">Your FM rig, from your desk.</p>
+    <p data-i18n="about.desc"></p>
+    <p class="muted" data-i18n="about.compat"></p>
+    <p class="author"><span data-i18n="about.author">F4IZC — vibe-coded with Claude</span><br><span class="muted" data-i18n="about.ham"></span></p>
+    <p class="muted"><span data-i18n="about.license">Free software, licensed under the Apache License 2.0.</span>
+      <span id="aboutLinks" hidden>
+        <a href="#" id="linkSource" data-i18n="about.source">Source code</a> ·
+        <a href="#" id="linkNotices" data-i18n="about.notices">Third-party licenses</a>
+      </span>
+    </p>
+    <h3 data-i18n="about.disclaimerTitle">Disclaimer</h3>
+    <p class="disclaimer" data-i18n="about.disclaimer"></p>
+    <div class="about-foot">
+      <label class="row"><span data-i18n="about.lang">Language</span>
+        <select id="langSelect"></select>
+      </label>
+      <button id="aboutClose" type="button" data-i18n="about.close">Close</button>
+    </div>
+   </div>
+  </dialog>
+
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

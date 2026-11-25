@@ -1,0 +1,73 @@
+{
+  "name": "deskptt",
+  "productName": "DeskPTT",
+  "version": "1.0.0",
+  "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a Digirig or similar USB audio interface.",
+  "author": "Stephane Tauziede (F4IZC)",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/f4izc/DeskPTT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f4izc/DeskPTT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/f4izc/DeskPTT/issues"
+  },
+  "keywords": [
+    "ham-radio",
+    "amateur-radio",
+    "digirig",
+    "ptt",
+    "vhf",
+    "uhf",
+    "fm",
+    "electron"
+  ],
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "notices": "node tools/gen-third-party.js",
+    "dist": "electron-builder --win nsis --x64 --publish never"
+  },
+  "dependencies": {
+    "serialport": "^12.0.0",
+    "uiohook-napi": "^1.5.4"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "io.github.deskptt",
+    "productName": "DeskPTT",
+    "copyright": "Copyright 2026 Stephane Tauziede (F4IZC) — Apache License 2.0",
+    "npmRebuild": false,
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "extraFiles": [
+      "LICENSE",
+      "NOTICE",
+      "THIRD_PARTY_NOTICES.md"
+    ],
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false,
+      "artifactName": "DeskPTT-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "DeskPTT",
+      "license": "LICENSE"
+    }
+  },
+  "allowScripts": {
+    "electron@33.4.11": true,
+    "uiohook-napi@1.5.5": true,
+    "@serialport/bindings-cpp@12.0.1": true
+  }
+}

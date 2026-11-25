@@ -1,0 +1,26 @@
+DeskPTT
+Copyright 2026 Stephane Tauziede (F4IZC)
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+It was developed with the assistance of Claude, an AI model by Anthropic.
+
+Binary distributions of DeskPTT include third-party software, each under
+its own license. The full list, with license texts, is in
+THIRD_PARTY_NOTICES.md. In particular:
+
+- Electron (MIT License), which embeds Chromium (BSD-style and other
+  licenses, see LICENSES.chromium.html in the installation folder) and
+  Node.js (MIT License).
+- serialport / @serialport/bindings-cpp (MIT License).
+- uiohook-napi (MIT License), which statically includes libuiohook,
+  Copyright (C) 2006-2023 Alexander Barker, licensed under the GNU Lesser
+  General Public License, version 3 or later (LGPL-3.0-or-later).
+  The source code of libuiohook is available at
+  https://github.com/kwhat/libuiohook and the source of the exact build
+  used here at https://github.com/SnosMe/uiohook-napi. You may replace the
+  file resources\app.asar.unpacked\node_modules\uiohook-napi\prebuilds\
+  win32-x64\uiohook-napi.node with your own build of that library.
+
+Digirig is a product of its respective owner. Icom, VARA and Windows are
+trademarks of their respective owners; they are mentioned only to describe
+compatibility. DeskPTT is not affiliated with or endorsed by any of them.
