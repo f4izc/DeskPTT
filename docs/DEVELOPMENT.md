@@ -58,8 +58,14 @@ after `tailMs`. Any crash, reload, window close or COM port loss forces PTT off.
    `%LOCALAPPDATA%\electron\Cache\…\electron-vX-win32-x64.zip` into `node_modules\electron\dist` and
    create `node_modules\electron\path.txt` containing `electron.exe`.
 7. **electron-builder on Windows**: `npmRebuild: false` (the native modules are N-API prebuilds, no
-   compiler needed) and `signAndEditExecutable: false` (avoids the winCodeSign archive that needs
-   symlink privileges). The app is therefore not signed and uses the default Electron icon.
+   compiler needed). The executable is edited (icon, version info) with rcedit from the winCodeSign
+   archive; it is not code-signed. Extracting that archive needs symlink privileges (fine on GitHub
+   runners). Locally, without Developer Mode or admin rights, extract it once by hand, skipping the
+   macOS part:
+   `node_modules\7zip-bin\win\x64\7za.exe x -y -snld "-x!darwin" %LOCALAPPDATA%\electron-builder\Cache\winCodeSign\<n>.7z -o%LOCALAPPDATA%\electron-builder\Cache\winCodeSign\winCodeSign-2.6.0`
+   - **Icons**: the source is `build/icon.svg` (copied to `renderer/icon.svg` for the header).
+     After changing it, run `node_modules\electron\dist\electron.exe tools\gen-icons` to regenerate
+     `build/icon.ico` (16–256 px) and `build/icon.png` (window icon), and commit them.
 8. **npm 11+** blocks install scripts unless allowed: see `allowScripts` in `package.json`.
 
 ## Testing without keying the radio

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 — 2026-11-25
+
+- New DeskPTT icon: application, installer, shortcuts, taskbar, and in front of the name in the window header.
+- Direct, permanent download link to the latest installer (`DeskPTT-Setup.exe`).
+- README: supported platforms (Windows 10/11, macOS planned) and scope (audio + PTT, no CAT) up front.
+
 ## 1.0.0 — 2026-11-25
 
 First public release.

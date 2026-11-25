@@ -109,6 +109,7 @@ function createWindow() {
     show: false, // affichée une fois la hauteur ajustée au contenu (fitHeight)
     backgroundColor: '#0f1418',
     title: 'DeskPTT',
+    icon: path.join(__dirname, 'build', 'icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

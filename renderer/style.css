@@ -32,7 +32,8 @@ body {
   padding: 14px 16px;
   border-bottom: 1px solid var(--line);
 }
-h1 { margin: 0; font-size: 18px; letter-spacing: .02em; }
+h1 { margin: 0; font-size: 18px; letter-spacing: .02em; display: flex; align-items: center; gap: 8px; }
+h1 .logo { width: 24px; height: 24px; border-radius: 6px; flex: none; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
   padding: 3px 10px;

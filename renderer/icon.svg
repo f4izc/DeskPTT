@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+<title>DeskPTT</title>
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C232D"/><stop offset="1" stop-color="#0D1117"/></linearGradient>
+<linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5BB0E6"/><stop offset="1" stop-color="#3A8CC6"/></linearGradient></defs>
+<rect width="1024" height="1024"  fill="url(#g)"/>
+
+<circle cx="392" cy="512" r="150" fill="url(#b)"/>
+<path d="M577.8 344.7 A250 250 0 0 1 577.8 679.3" fill="none" stroke="#E6EDF3" stroke-opacity="1" stroke-width="58" stroke-linecap="round"/>
+<path d="M659.5 271.1 A360 360 0 0 1 659.5 752.9" fill="none" stroke="#E6EDF3" stroke-opacity="0.55" stroke-width="58" stroke-linecap="round"/>
+</svg>
