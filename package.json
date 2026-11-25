@@ -2,7 +2,7 @@
   "name": "deskptt",
   "productName": "DeskPTT",
   "version": "1.0.1",
-  "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a Digirig or similar USB audio interface.",
+  "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a USB audio interface (USB sound card + COM port PTT).",
   "author": "Stephane Tauziede (F4IZC)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/f4izc/DeskPTT",

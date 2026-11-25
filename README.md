@@ -6,7 +6,7 @@
 [![Platform: Windows 10/11](https://img.shields.io/badge/Platform-Windows_10%2F11_x64-0078D6)](#download)
 [![macOS: planned](https://img.shields.io/badge/macOS-planned-lightgrey)](#download)
 
-*Works with Digirig and similar USB audio interfaces.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
+*Works with any USB audio interface for radio that keys PTT through a COM port.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
 
 ![DeskPTT, advanced view](site/img/advanced.png)
 
@@ -16,6 +16,9 @@
 >   it does not control the radio (frequency, mode, memories stay on the rig).
 >   That is all the vast majority of **VHF/UHF FM mobile and handheld transceivers** need:
 >   any rig with a mic/speaker or data jack works, whether or not it has a CAT port.
+> - 🔌 **Generic USB audio interface.** Any interface that appears in Windows as a USB sound card plus a
+>   COM port whose RTS or DTR line keys the radio (USB sound chip of the CM108 type + USB-serial chip, for example).
+>   PTT through the CM108's own GPIO pin is not supported yet; without PTT keying, use the radio's VOX.
 
 DeskPTT turns your Windows PC into a desk microphone and speaker for your VHF/UHF FM transceiver.
 Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
@@ -48,12 +51,13 @@ Checksum, release notes and previous versions are on the
 
 ## Quick start
 
-Windows names the interface from the PC's point of view: the Digirig **"Microphone"** carries the sound
+Windows names the interface from the PC's point of view: the interface's **"Microphone"** carries the sound
 **coming out of** the radio, and its **"Speakers"** carry the sound **going into** the radio.
 
 1. **Receive**: *Radio audio* = `Microphone (USB PnP Sound Device)`; *Computer speaker or headset* = where you want to listen.
 2. **Transmit**: *Computer microphone* = your mic; *To the radio* = `Speakers (USB PnP Sound Device)`.
-3. **COM port**: the interface's serial port (marked ★ Digirig for Silicon Labs CP210x chips).
+3. **COM port**: the interface's serial port, and the line that keys it (RTS on most interfaces).
+   Ports with a Silicon Labs CP210x chip, common on these interfaces, are marked with a ★.
    Close other software that uses it (VARA, etc.): a COM port can only be open in one application at a time.
 4. **Global hotkey**: *Assign…*, then press a key or a mouse side button (Esc cancels).
 5. **Level to radio** (dB): the interface output drives the radio's *microphone* input, so it needs strong
@@ -145,9 +149,9 @@ DeskPTT stands on the shoulders of these free and open-source projects and resou
 
 **Hardware, standards and documentation**
 
-- [Digirig](https://digirig.net/) — the USB audio + serial interface this app was designed and tested with
-  (C-Media style USB audio codec, Silicon Labs CP210x USB-to-UART bridge whose RTS line keys the radio).
-- Tested with an Icom ID-5200 VHF/UHF transceiver.
+- Tested with a [Digirig](https://digirig.net/) Mobile interface (C-Media style USB audio codec, Silicon Labs
+  CP210x USB-to-UART bridge whose RTS line keys the radio) and an Icom ID-5200 VHF/UHF transceiver.
+  DeskPTT is not specific to this hardware: any interface built the same way works.
 - 1750 Hz tone-burst repeater access, as commonly used on IARU Region 1 FM repeaters.
 - [MDN Web Docs](https://developer.mozilla.org/) — Web Audio API (`BiquadFilterNode`, `AnalyserNode`, `OscillatorNode`)
   and Media Capture references.
