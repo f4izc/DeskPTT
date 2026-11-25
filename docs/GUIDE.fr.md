@@ -56,6 +56,15 @@ Tant qu'il est maintenu, le poste passe en émission et reçoit une tonalité 17
 pendant la tonalité). Au relâchement, l'émission s'arrête. Si le PTT était déjà actif (mode bascule),
 seule la tonalité s'arrête. La tonalité suit le réglage « Niveau vers le poste ».
 
+## Mode VOX du poste
+
+Si votre interface ne peut pas commander le PTT, utilisez le VOX du poste : bouton **i** (À propos) →
+*Réglages* → *Commande d'émission* = **VOX du poste**, et activez le VOX sur le poste.
+DeskPTT ne commande alors plus aucune ligne et n'ouvre pas le port COM. Le bouton PTT devient
+**VOX / MUTE** : il ouvre ou coupe le son envoyé au poste, et c'est le VOX du poste qui passe en émission.
+Le bouton et le raccourci suivent le réglage *Mode* (maintenir ou bascule), le TOT coupe le son au bout du
+délai, et l'application démarre toujours en **MUTE**.
+
 ## Vues Avancée / Compacte
 
 Le sélecteur en haut à droite bascule entre **Avancée** (tous les réglages, par défaut) et **Compacte**

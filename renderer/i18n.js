@@ -100,6 +100,21 @@ const STRINGS = {
     'about.disclaimer': 'Experimental software for licensed radio amateurs, provided “as is”, without any warranty. You alone are responsible for how you use it: your station, your transmissions, compliance with your licence and local regulations, and any damage, interference or malfunction that may result. By using it, you accept that the author bears no liability whatsoever.',
     'about.lang': 'Language',
     'about.close': 'Close',
+    'about.settings': 'Settings',
+    'about.txMode': 'Transmit control',
+    'txMode.ptt': 'PTT via the COM port',
+    'txMode.vox': 'Radio VOX',
+    'about.voxHint': "Radio VOX: for interfaces that cannot key the radio. DeskPTT then never keys the transmitter: the VOX / MUTE button opens or mutes the audio sent to the radio, and the radio's own VOX (to be enabled on the radio) starts transmitting.",
+
+    'vox.on': 'VOX',
+    'vox.off': 'MUTE',
+    'vox.muted': 'Audio to radio muted',
+    'vox.open': 'AUDIO OPEN {t}',
+    'hint.voxHold': 'Hold the button down to send audio to the radio.',
+    'hint.voxToggle': 'Click once to send audio to the radio, once more to mute it.',
+    'chip.vox': 'Radio VOX mode',
+    'sum.vox': 'VOX · {mode} · hotkey {key} · TOT {tot}',
+    'set.titleVox': 'VOX settings',
   },
 
   fr: {
@@ -197,6 +212,21 @@ const STRINGS = {
     'about.disclaimer': "Logiciel expérimental destiné aux radioamateurs licenciés, fourni « tel quel », sans aucune garantie. Vous êtes seul responsable de son utilisation : votre station, vos émissions, le respect de votre licence et de la réglementation, ainsi que tout dommage, brouillage ou dysfonctionnement qui pourrait en résulter. En l'utilisant, vous acceptez que l'auteur n'engage aucune responsabilité.",
     'about.lang': 'Langue',
     'about.close': 'Fermer',
+    'about.settings': 'Réglages',
+    'about.txMode': "Commande d'émission",
+    'txMode.ptt': 'PTT par le port COM',
+    'txMode.vox': 'VOX du poste',
+    'about.voxHint': "VOX du poste : pour les interfaces qui ne peuvent pas commander le PTT. DeskPTT ne passe alors jamais le poste en émission : le bouton VOX / MUTE ouvre ou coupe le son envoyé au poste, et c'est le VOX du poste (à activer sur le poste) qui déclenche l'émission.",
+
+    'vox.on': 'VOX',
+    'vox.off': 'MUTE',
+    'vox.muted': 'Son vers le poste coupé',
+    'vox.open': 'SON OUVERT {t}',
+    'hint.voxHold': 'Maintenez le bouton enfoncé pour envoyer le son au poste.',
+    'hint.voxToggle': 'Cliquez une fois pour envoyer le son au poste, encore une fois pour le couper.',
+    'chip.vox': 'Mode VOX du poste',
+    'sum.vox': 'VOX · {mode} · raccourci {key} · TOT {tot}',
+    'set.titleVox': 'Réglages VOX',
   },
 };
 

@@ -174,8 +174,14 @@ dialog.about::backdrop { background: rgba(0, 0, 0, .55); }
 .about-body .author .muted { font-weight: 400; }
 .about-body .tagline { color: var(--accent); font-style: italic; margin-top: -4px; }
 .about-body .disclaimer { color: var(--muted); font-size: 12px; line-height: 1.5; }
-.about-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 8px; }
-.about-foot select { width: auto; }
+.about-foot { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+.about-body h3.about-set-title { color: var(--text); }
+.about-settings { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
+.about-settings .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.about-settings select { width: auto; }
+
+/* Mode VOX du poste : pas de port COM, ni ligne de commande, ni traîne PTT. */
+body.vox .ptt-only { display: none !important; }
 
 /* ---------- Vues */
 /* Pas de barre de défilement en compact : elle changerait la largeur mesurée. */

@@ -77,7 +77,7 @@
     <section class="ptt-zone">
       <div class="ptt-row">
         <button id="ptt" class="ptt" type="button" aria-pressed="false">
-          <span class="ptt-label">PTT</span>
+          <span id="pttLabel" class="ptt-label">PTT</span>
           <span id="pttSub" class="ptt-sub">Receive</span>
         </button>
         <button id="tcall" class="ptt tcall" type="button" aria-pressed="false" data-i18n-title="tcall.title">
@@ -89,15 +89,15 @@
     </section>
 
     <section class="card wide advanced-only">
-      <h2 data-i18n="set.title">PTT settings</h2>
+      <h2 id="setTitle">PTT settings</h2>
       <div class="grid">
-        <label><span data-i18n="set.port">Digirig COM port</span>
+        <label class="ptt-only"><span data-i18n="set.port">Digirig COM port</span>
           <span class="inline">
             <select id="serialPath"></select>
             <button id="refreshPorts" type="button" class="ghost" data-i18n-title="set.refresh">↻</button>
           </span>
         </label>
-        <label><span data-i18n="set.line">Control line</span>
+        <label class="ptt-only"><span data-i18n="set.line">Control line</span>
           <select id="pttLine">
             <option value="rts" data-i18n="set.rtsDefault">RTS (Digirig default)</option>
             <option value="dtr">DTR</option>
@@ -112,7 +112,7 @@
         <label><span data-i18n="set.tot">Timeout, TOT (s, 0 = none)</span>
           <input id="totSeconds" type="number" min="0" max="3600" step="10">
         </label>
-        <label><span data-i18n="set.tail">PTT tail (ms)</span>
+        <label class="ptt-only"><span data-i18n="set.tail">PTT tail (ms)</span>
           <input id="tailMs" type="number" min="0" max="1000" step="10">
         </label>
         <label><span data-i18n="set.hotkey">Global hotkey</span>
@@ -143,10 +143,20 @@
     </p>
     <h3 data-i18n="about.disclaimerTitle">Disclaimer</h3>
     <p class="disclaimer" data-i18n="about.disclaimer"></p>
-    <div class="about-foot">
+    <h3 class="about-set-title" data-i18n="about.settings">Settings</h3>
+    <div class="about-settings">
       <label class="row"><span data-i18n="about.lang">Language</span>
         <select id="langSelect"></select>
       </label>
+      <label class="row"><span data-i18n="about.txMode">Transmit control</span>
+        <select id="txModeSelect">
+          <option value="ptt" data-i18n="txMode.ptt">PTT via the COM port</option>
+          <option value="vox" data-i18n="txMode.vox">Radio VOX</option>
+        </select>
+      </label>
+      <p class="muted" data-i18n="about.voxHint"></p>
+    </div>
+    <div class="about-foot">
       <button id="aboutClose" type="button" data-i18n="about.close">Close</button>
     </div>
    </div>

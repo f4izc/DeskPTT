@@ -18,7 +18,8 @@
 >   any rig with a mic/speaker or data jack works, whether or not it has a CAT port.
 > - 🔌 **Generic USB audio interface.** Any interface that appears in Windows as a USB sound card plus a
 >   COM port whose RTS or DTR line keys the radio (USB sound chip of the CM108 type + USB-serial chip, for example).
->   PTT through the CM108's own GPIO pin is not supported yet; without PTT keying, use the radio's VOX.
+>   PTT through the CM108's own GPIO pin is not supported yet; without PTT keying, switch DeskPTT to
+>   **Radio VOX** mode and let the radio's VOX key the transmitter.
 
 DeskPTT turns your Windows PC into a desk microphone and speaker for your VHF/UHF FM transceiver.
 Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
@@ -28,6 +29,8 @@ Plug in your interface, pick your audio devices, and you're on the air — no ex
 - **PTT your way**: an on-screen button or a global hotkey (keyboard key or mouse side button) that works
   even when another app has focus. PTT is keyed through the interface's COM port (RTS/DTR).
 - **Repeater-friendly**: a 1750 Hz tone call button, a time-out timer (TOT) and an adjustable PTT tail.
+- **Radio VOX mode**: for interfaces that cannot key the radio, the PTT button becomes **VOX / MUTE** and
+  opens or mutes the audio sent to the radio; the radio's own VOX does the keying.
 - **Simple or detailed**: switch between the Compact and Advanced views.
 
 Built by a ham, for hams. — Stephane Tauziede, F4IZC
@@ -71,6 +74,7 @@ Windows names the interface from the PC's point of view: the interface's **"Micr
 | Mute listening while transmitting | Avoids hearing the radio's own audio in your headset during TX |
 | USB whistle filter | Notch filters at 1, 2, 3, 4 kHz + 3.4 kHz low-pass against USB frame noise (on by default) |
 | T-CALL | Hold to transmit a 1750 Hz tone (repeater access); follows the *Level to radio* setting |
+| Transmit control (About → Settings) | *PTT via the COM port* (default) or *Radio VOX*: DeskPTT then never opens the COM port; the **VOX / MUTE** button (and hotkey, following the *Mode*) opens or mutes the audio sent to the radio. Always starts muted. |
 
 PTT is released automatically when the TOT expires, when the app closes or crashes, when the COM port is
 unplugged, or when the PTT mode changes. RTS and DTR are lowered as soon as the port opens.

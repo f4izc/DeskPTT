@@ -47,7 +47,13 @@ const DEFAULTS = {
   view: 'advanced',  // 'advanced' | 'compact'
   lang: 'en',        // 'en' | 'fr'
   noiseSuppression: false,
+  // 'ptt' : DeskPTT passe le poste en émission par RTS/DTR du port COM.
+  // 'vox' : DeskPTT ne commande jamais l'émission (port COM fermé) ; le bouton
+  //         ouvre ou coupe le son envoyé au poste, dont le VOX déclenche l'émission.
+  txMode: 'ptt',
 };
+
+const isVox = () => settings.txMode === 'vox';
 
 const settingsFile = () => path.join(app.getPath('userData'), 'settings.json');
 let settings = { ...DEFAULTS };
@@ -141,7 +147,7 @@ function setPortStatus(s) {
 
 function writeLine(on) {
   return new Promise((resolve) => {
-    if (!port || !port.isOpen) return resolve(false);
+    if (isVox() || !port || !port.isOpen) return resolve(false);
     const signals = settings.pttLine === 'dtr'
       ? { dtr: on, rts: false }
       : { rts: on, dtr: false };
@@ -171,6 +177,8 @@ async function openPort(portPath) {
   settings.serialPath = portPath || null;
   saveSettings();
   if (!portPath) return setPortStatus({ open: false, path: null, error: null });
+  // Mode VOX : le port est mémorisé mais jamais ouvert (aucune ligne PTT pilotée).
+  if (isVox()) return setPortStatus({ open: false, path: null, error: null });
   if (!SerialPort) return setPortStatus({ error: { key: 'err.serialModule' } });
 
   const p = new SerialPort({ path: portPath, baudRate: 9600, autoOpen: false });
@@ -427,7 +435,16 @@ function registerIpc() {
 
   ipcMain.handle('save-settings', (_e, patch) => {
     const allowed = Object.keys(DEFAULTS).filter((k) => k !== 'hotkey' && k !== 'serialPath');
+    const prevTxMode = settings.txMode;
     for (const k of allowed) if (k in patch) settings[k] = patch[k];
+    if ('txMode' in patch) settings.txMode = patch.txMode === 'vox' ? 'vox' : 'ptt';
+    if (settings.txMode !== prevTxMode) {
+      // Changement PTT ↔ VOX : on repart toujours de « pas d'émission » (MUTE).
+      pressHeld = false;
+      setPtt(false, 'mode');
+      if (isVox()) closePort().then(() => setPortStatus({ error: null }));
+      else openPort(settings.serialPath);
+    }
     if (patch.pttLine && port && port.isOpen) {
       // Changement de ligne : on retombe tout, puis on réapplique l'état.
       port.set({ rts: false, dtr: false }, () => writeLine(pttOn));

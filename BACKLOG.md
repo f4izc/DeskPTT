@@ -13,7 +13,7 @@ keep the ★ marker for CP210x ports, then retake the screenshots in `site/img/`
 ### PTT through the CM108 GPIO (HID)
 Many CM108/CM119-based interfaces (AllStar-style, DMK URI, home-made boards) have no USB-serial chip:
 PTT is wired to a GPIO pin of the sound chip itself, usually **GPIO3**, driven through a USB HID output report.
-Today DeskPTT keys only through a COM port line (RTS/DTR); these users must fall back to the radio's VOX.
+Today DeskPTT keys only through a COM port line (RTS/DTR); these users must fall back to the Radio VOX mode (1.1.0).
 
 - New "PTT method" choice in *PTT settings*: COM port (RTS/DTR) or CM108 GPIO (pin 1–8, default 3).
 - Find the HID device that belongs to the selected sound card (C-Media VID `0d8c`), list several if needed.

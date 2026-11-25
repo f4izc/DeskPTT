@@ -8,6 +8,9 @@ const api = window.radio;
 const $ = (id) => document.getElementById(id);
 
 let settings = {};
+// Mode VOX du poste : le bouton PTT devient VOX / MUTE et ne fait qu'ouvrir ou
+// couper le son envoyé au poste ; le processus principal ne touche à aucune ligne.
+const isVox = () => settings.txMode === 'vox';
 let pttOn = false;
 let pttSince = 0;
 let totSeconds = 0;
@@ -290,7 +293,8 @@ function tick() {
   if (pttOn) {
     const s = Math.floor((Date.now() - pttSince) / 1000);
     const left = totSeconds > 0 ? t('ptt.tot', { s: Math.max(0, totSeconds - s) }) : '';
-    $('pttSub').textContent = t(toneOn ? 'ptt.tone' : 'ptt.tx', { t: fmt(s) }) + left;
+    const key = toneOn ? 'ptt.tone' : isVox() ? 'vox.open' : 'ptt.tx';
+    $('pttSub').textContent = t(key, { t: fmt(s) }) + left;
   }
   requestAnimationFrame(tick);
 }
@@ -322,7 +326,7 @@ function hotkeyName(h) {
 function renderSummary() {
   $('sumRx').textContent = `${shortName(settings.rigIn)} → ${shortName(settings.headsetOut)}`;
   $('sumTx').textContent = `${shortName(settings.headsetIn)} → ${shortName(settings.rigOut)} · ${settings.txGainDb} dB`;
-  $('sumPtt').textContent = t('sum.ptt', {
+  $('sumPtt').textContent = t(isVox() ? 'sum.vox' : 'sum.ptt', {
     line: settings.pttLine.toUpperCase(),
     mode: t(settings.mode === 'toggle' ? 'sum.toggle' : 'sum.hold'),
     key: hotkeyName(settings.hotkey) || t('key.noneLower'),
@@ -375,6 +379,13 @@ function bindAbout(version, homepage) {
     // (the main process drops PTT on reload, for safety).
     location.reload();
   });
+  const mode = $('txModeSelect');
+  mode.value = isVox() ? 'vox' : 'ptt';
+  mode.addEventListener('change', async () => {
+    settings.txMode = mode.value;
+    await api.saveSettings({ txMode: settings.txMode });
+    await applyTxMode();
+  });
   $('aboutBtn').addEventListener('click', () => dlg.showModal());
   $('aboutClose').addEventListener('click', () => dlg.close());
   // Click on the backdrop closes the dialog.
@@ -387,12 +398,26 @@ function renderPtt() {
   const b = $('ptt');
   b.classList.toggle('on', pttOn);
   b.setAttribute('aria-pressed', String(pttOn));
-  if (!pttOn) $('pttSub').textContent = t('ptt.rx');
+  $('pttLabel').textContent = isVox() ? t(pttOn ? 'vox.on' : 'vox.off') : 'PTT';
+  if (!pttOn) $('pttSub').textContent = t(isVox() ? 'vox.muted' : 'ptt.rx');
+}
+
+// Bascule PTT ↔ VOX (réglage de la fenêtre À propos) : réglages masqués,
+// libellés du bouton, résumé et pastille du port. Démarre toujours en MUTE.
+async function applyTxMode() {
+  document.body.classList.toggle('vox', isVox());
+  $('setTitle').textContent = t(isVox() ? 'set.titleVox' : 'set.title');
+  renderPtt();
+  renderHint();
+  renderSummary();
+  renderSerial(lastSerial);
+  if (windowFitted) await fitWindow();
 }
 
 function renderHint() {
   const key = hotkeyName(settings.hotkey);
-  const how = t(settings.mode === 'toggle' ? 'hint.toggle' : 'hint.hold');
+  const toggle = settings.mode === 'toggle';
+  const how = t(isVox() ? (toggle ? 'hint.voxToggle' : 'hint.voxHold') : (toggle ? 'hint.toggle' : 'hint.hold'));
   $('pttHint').textContent = key ? how + t('hint.key', { key }) : how;
 }
 
@@ -442,8 +467,17 @@ async function refreshPorts() {
   }
 }
 
+let lastSerial = { open: false, path: null, error: null };
+
 function renderSerial(s) {
+  lastSerial = s || lastSerial;
+  s = lastSerial;
   const chip = $('chipPort');
+  if (isVox()) {
+    chip.textContent = t('chip.vox');
+    chip.className = 'chip ok';
+    return banner(tMsg(s.error));
+  }
   if (s.open) {
     chip.textContent = t('chip.port', { port: s.path, line: settings.pttLine.toUpperCase() });
     chip.className = 'chip ok';
@@ -609,6 +643,7 @@ async function init() {
   settings = state.settings;
   setLang(settings.lang);
   applyStaticText();
+  document.body.classList.toggle('vox', isVox()); // avant le premier ajustement de hauteur
   bindAbout(state.version, state.homepage);
 
   // Une première demande d'accès au micro est nécessaire pour obtenir les noms des périphériques.
@@ -635,7 +670,7 @@ async function init() {
   pttOn = state.ptt.on;
   pttSince = state.ptt.since;
   totSeconds = state.ptt.totSeconds;
-  renderPtt();
+  await applyTxMode();
 
   api.onPtt((p) => {
     pttOn = p.on;

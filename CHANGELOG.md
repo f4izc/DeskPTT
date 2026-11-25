@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 — 2026-11-25
+
+- **Radio VOX mode** for interfaces that cannot key the radio: *About → Settings → Transmit control*.
+  DeskPTT then never opens the COM port; the PTT button becomes **VOX / MUTE** and opens or mutes the audio
+  sent to the radio, whose own VOX keys the transmitter. Follows the hold/toggle mode, TOT applies, and it
+  always starts muted. COM port, control line and PTT tail are hidden in this mode.
+- New *Settings* area in the About window (language, transmit control).
+
 ## 1.0.1 — 2026-11-25
 
 - New DeskPTT icon: application, installer, shortcuts, taskbar, and in front of the name in the window header.
