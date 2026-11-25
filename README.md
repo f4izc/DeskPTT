@@ -6,7 +6,7 @@
 [![Platform: Windows 10/11](https://img.shields.io/badge/Platform-Windows_10%2F11_x64-0078D6)](#download)
 [![macOS: planned](https://img.shields.io/badge/macOS-planned-lightgrey)](#download)
 
-*Works with Digirig and similar USB audio interfaces.* — 🌐 **Website: [f4izc.github.io/DeskPTT](https://f4izc.github.io/DeskPTT/)**
+*Works with Digirig and similar USB audio interfaces.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
 
 ![DeskPTT, advanced view](site/img/advanced.png)
 
