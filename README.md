@@ -24,8 +24,11 @@ Built by a ham, for hams. — Stephane Tauziede, F4IZC
 
 ## Download
 
-Get the Windows installer (`DeskPTT-Setup-x.y.z.exe`) from the
-[latest release](https://github.com/f4izc/DeskPTT/releases/latest).
+**[⬇ Download DeskPTT for Windows (installer, .exe)](https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe)**
+
+No build needed: download, run the installer, done. This link always points to the latest version.
+Checksum, release notes and previous versions are on the
+[releases page](https://github.com/f4izc/DeskPTT/releases/latest).
 
 - **Platform**: Windows 10 and 11, 64-bit (x64). macOS, Linux and Windows on ARM are not built yet.
 - The installer is **not code-signed**, so Windows SmartScreen may say "Windows protected your PC".

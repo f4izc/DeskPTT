@@ -8,7 +8,8 @@ L'interface est en anglais par défaut : passez-la en français avec le bouton *
 
 ## Installation
 
-Téléchargez `DeskPTT-Setup-x.y.z.exe` dans les [releases du dépôt](../../../releases/latest) et lancez-le.
+**[⬇ Télécharger DeskPTT pour Windows (installeur .exe)](https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe)** puis lancez-le : aucune compilation nécessaire.
+Ce lien pointe toujours vers la dernière version ; empreinte SHA-256 et versions précédentes dans les [releases](https://github.com/f4izc/DeskPTT/releases).
 L'installeur n'est pas signé : Windows SmartScreen peut afficher « Windows a protégé votre ordinateur ».
 Cliquez alors sur *Informations complémentaires → Exécuter quand même*.
 Plateforme : Windows 10 et 11, 64 bits (x64).

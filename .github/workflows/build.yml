@@ -52,6 +52,9 @@ jobs:
         working-directory: dist
         run: |
           for f in DeskPTT-Setup-*.exe; do sha256sum "$f" > "$f.sha256"; cat "$f.sha256"; done
+          # Copie à nom fixe : lien permanent releases/latest/download/DeskPTT-Setup.exe
+          cp DeskPTT-Setup-*.exe DeskPTT-Setup.exe
+          sha256sum DeskPTT-Setup.exe > DeskPTT-Setup.exe.sha256
 
       - uses: actions/upload-artifact@v4
         with:
@@ -68,7 +71,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           NOTES=$(awk -v v="${GITHUB_REF_NAME#v}" '$0 ~ "^## "v {f=1; next} /^## / {f=0} f' CHANGELOG.md)
-          gh release create "$GITHUB_REF_NAME" dist/DeskPTT-Setup-*.exe dist/DeskPTT-Setup-*.exe.sha256 \
+          gh release create "$GITHUB_REF_NAME" dist/DeskPTT-Setup*.exe dist/DeskPTT-Setup*.exe.sha256 \
             --title "DeskPTT $GITHUB_REF_NAME" \
             --notes "${NOTES:-See CHANGELOG.md}
 
