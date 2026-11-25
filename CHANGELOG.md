@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2 — 2026-11-26
+
+- About window: author shown as "Steph F4IZC / N4IZC" (README and website credits updated too).
+
 ## 1.1.1 — 2026-11-26
 
 - Generic wording in the app: "interface" instead of the Digirig brand (device labels, COM port, RTS,
