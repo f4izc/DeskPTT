@@ -33,7 +33,7 @@ Plug in your interface, pick your audio devices, and you're on the air — no ex
   opens or mutes the audio sent to the radio; the radio's own VOX does the keying.
 - **Simple or detailed**: switch between the Compact and Advanced views.
 
-Built by a ham, for hams. — Stephane Tauziede, F4IZC
+Built by a ham, for hams. — Steph F4IZC / N4IZC
 
 > 🇫🇷 Guide d'utilisation en français : [docs/GUIDE.fr.md](docs/GUIDE.fr.md)
 
@@ -164,7 +164,7 @@ DeskPTT stands on the shoulders of these free and open-source projects and resou
 
 **Development**
 
-- Developed by Stephane Tauziede (F4IZC), vibe-coded with [Claude](https://www.anthropic.com/claude) (Anthropic) in Claude Code.
+- Developed by Steph F4IZC / N4IZC, vibe-coded with [Claude](https://www.anthropic.com/claude) (Anthropic) in Claude Code.
 
 Digirig, Icom, VARA and Windows are trademarks of their respective owners. DeskPTT is an independent project
 and is not affiliated with or endorsed by them.
