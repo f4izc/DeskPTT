@@ -3,6 +3,13 @@
 *Votre poste FM, depuis votre bureau.* DeskPTT transforme votre PC Windows en micro et haut-parleur
 de bureau pour votre émetteur-récepteur FM VHF/UHF, via un Digirig ou une interface audio USB similaire.
 
+> **En bref**
+> - 🖥️ **Fonctionne sous Windows 10 et 11** (64 bits). Une **version macOS est en projet**.
+> - 🎙️ **Son + PTT uniquement, pas de CAT.** DeskPTT gère l'audio dans les deux sens et passe en émission ;
+>   il ne pilote pas la radio (fréquence, mode, mémoires se règlent sur le poste).
+>   C'est tout ce dont a besoin la grande majorité des **TRX FM VHF/UHF mobiles et portatifs**,
+>   avec ou sans prise CAT.
+
 L'interface est en anglais par défaut : passez-la en français avec le bouton **i** (À propos) en haut
 à droite, menu *Language*. Ce guide utilise les libellés français.
 

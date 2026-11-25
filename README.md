@@ -3,8 +3,17 @@
 [![Build](https://github.com/f4izc/DeskPTT/actions/workflows/build.yml/badge.svg)](https://github.com/f4izc/DeskPTT/actions/workflows/build.yml)
 [![Latest release](https://img.shields.io/github/v/release/f4izc/DeskPTT)](https://github.com/f4izc/DeskPTT/releases/latest)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Platform: Windows 10/11](https://img.shields.io/badge/Platform-Windows_10%2F11_x64-0078D6)](#download)
+[![macOS: planned](https://img.shields.io/badge/macOS-planned-lightgrey)](#download)
 
 *Works with Digirig and similar USB audio interfaces.*
+
+> **At a glance**
+> - 🖥️ **Runs on Windows 10 and 11** (64-bit). A **macOS version is planned**.
+> - 🎙️ **Audio + PTT only, no CAT.** DeskPTT handles the sound in both directions and keys the transmitter;
+>   it does not control the radio (frequency, mode, memories stay on the rig).
+>   That is all the vast majority of **VHF/UHF FM mobile and handheld transceivers** need:
+>   any rig with a mic/speaker or data jack works, whether or not it has a CAT port.
 
 DeskPTT turns your Windows PC into a desk microphone and speaker for your VHF/UHF FM transceiver.
 Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
@@ -30,7 +39,7 @@ No build needed: download, run the installer, done. This link always points to t
 Checksum, release notes and previous versions are on the
 [releases page](https://github.com/f4izc/DeskPTT/releases/latest).
 
-- **Platform**: Windows 10 and 11, 64-bit (x64). macOS, Linux and Windows on ARM are not built yet.
+- **Platform**: Windows 10 and 11, 64-bit (x64). **macOS is planned**; Linux and Windows on ARM are not built yet.
 - The installer is **not code-signed**, so Windows SmartScreen may say "Windows protected your PC".
   Click *More info → Run anyway*. You can check the file against the SHA-256 checksum published with each release.
 - Every release is built from this repository's source code by GitHub Actions; the build log is public.
