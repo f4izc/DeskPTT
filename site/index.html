@@ -1,0 +1,203 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Copyright 2026 Stephane Tauziede (F4IZC) -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DeskPTT — Your FM rig, from your desk</title>
+  <meta name="description" content="DeskPTT turns your Windows PC into a desk microphone, speaker and PTT for your VHF/UHF FM transceiver, through a Digirig or similar USB audio interface. Free software, Apache 2.0.">
+  <meta property="og:title" content="DeskPTT — Your FM rig, from your desk">
+  <meta property="og:description" content="Desk mic, speaker and PTT for VHF/UHF FM transceivers via a Digirig. Free and open source, for Windows 10/11.">
+  <meta property="og:image" content="https://f4izc.github.io/DeskPTT/img/advanced.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="brand" href="#top"><img src="icon.svg" alt="" width="28" height="28">DeskPTT</a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#quick-start">Quick start</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/f4izc/DeskPTT">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-in">
+        <div class="hero-text">
+          <p class="eyebrow">Free &amp; open source · For hams</p>
+          <h1>Your FM rig,<br>from your desk.</h1>
+          <p class="lead">DeskPTT turns your Windows PC into a desk microphone, speaker and PTT for your
+            VHF/UHF FM transceiver, through a <strong>Digirig</strong> or similar USB audio interface.
+            No extra hand mic needed.</p>
+          <div class="cta">
+            <a class="btn primary" href="https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Download for Windows
+            </a>
+            <a class="btn" href="#quick-start">Quick start</a>
+          </div>
+          <p class="meta">Windows 10 / 11 (64-bit) · macOS planned · Apache 2.0 ·
+            <a href="https://github.com/f4izc/DeskPTT/releases">all releases</a></p>
+        </div>
+        <figure class="hero-shot">
+          <img src="img/compact.png" width="460" height="313" alt="DeskPTT compact view: receive and transmit summary, large PTT button and T-CALL button">
+        </figure>
+      </div>
+    </section>
+
+    <section class="scope">
+      <div class="wrap scope-grid">
+        <div class="pill-card">
+          <h3>🖥️ Windows 10 &amp; 11</h3>
+          <p>64-bit installer, built in the open by GitHub Actions. A macOS version is planned.</p>
+        </div>
+        <div class="pill-card">
+          <h3>🎙️ Audio + PTT, no CAT</h3>
+          <p>DeskPTT carries the sound both ways and keys the transmitter. Frequency, mode and memories stay on the
+            rig — exactly what most VHF/UHF FM mobiles and handhelds need, with or without a CAT port.</p>
+        </div>
+        <div class="pill-card">
+          <h3>🔌 Digirig &amp; friends</h3>
+          <p>Any interface that shows up as a USB sound card plus a COM port with RTS or DTR keying.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <div class="wrap">
+        <h2>Everything you need to operate FM from the shack PC</h2>
+        <div class="feat-grid">
+          <div class="feat"><span class="ic">🔊</span><h3>Receive</h3>
+            <p>Radio audio to your speakers or headset, with volume control and a filter against the
+              1&nbsp;kHz USB whistle of cheap codecs.</p></div>
+          <div class="feat"><span class="ic">🎤</span><h3>Transmit</h3>
+            <p>Your PC microphone to the radio, with a level set in dB, a live level meter and
+              optional noise reduction.</p></div>
+          <div class="feat"><span class="ic">⌨️</span><h3>PTT your way</h3>
+            <p>On-screen button or a global hotkey — keyboard key or mouse side button — that works even when another
+              app has the focus. Hold-to-talk or toggle.</p></div>
+          <div class="feat"><span class="ic">📡</span><h3>Repeater-friendly</h3>
+            <p>T-CALL 1750&nbsp;Hz tone button, time-out timer (TOT) and adjustable PTT tail.</p></div>
+          <div class="feat"><span class="ic">🛡️</span><h3>Fail-safe</h3>
+            <p>PTT drops on crash, reload, port loss or exit. Lines are lowered as soon as the port opens.</p></div>
+          <div class="feat"><span class="ic">🧩</span><h3>Simple or detailed</h3>
+            <p>Switch between the Compact and Advanced views. English and French interface.</p></div>
+        </div>
+
+        <figure class="shot-big">
+          <img src="img/advanced.png" width="884" height="776" loading="lazy" alt="DeskPTT advanced view: receive and transmit device selection, volume and level, PTT and T-CALL buttons, PTT settings">
+          <figcaption>Advanced view: pick every device, set levels, PTT line, mode, TOT, tail and hotkey.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="quick-start" class="quick">
+      <div class="wrap">
+        <h2>Quick start</h2>
+        <p class="sub">About five minutes, from download to your first transmission.</p>
+        <ol class="steps">
+          <li>
+            <h3>Connect the interface</h3>
+            <p>Plug the Digirig into a USB port and into your radio's mic/speaker or data jack. Windows shows a
+              <em>USB PnP Sound Device</em> and a <em>Silicon Labs CP210x</em> COM port. If you use VARA, it is the
+              same port.</p>
+          </li>
+          <li>
+            <h3>Install DeskPTT</h3>
+            <p><a href="https://github.com/f4izc/DeskPTT/releases/latest/download/DeskPTT-Setup.exe">Download the installer</a>
+              and run it. It is not code-signed: if SmartScreen says <em>Windows protected your PC</em>, click
+              <em>More info → Run anyway</em>. You can verify the file with the <code>.sha256</code> published in the
+              release.</p>
+          </li>
+          <li>
+            <h3>Pick the audio devices</h3>
+            <p>Windows names the interface from the PC's point of view:</p>
+            <ul>
+              <li><strong>Receive</strong> — <em>Radio audio</em>: the Digirig <strong>Microphone</strong>;
+                <em>Computer speaker or headset</em>: your headset.</li>
+              <li><strong>Transmit</strong> — <em>Computer microphone</em>: your mic;
+                <em>To the radio</em>: the Digirig <strong>Speakers</strong>.</li>
+            </ul>
+            <p>DeskPTT pre-selects sensible defaults and never picks the Digirig for your headset.</p>
+          </li>
+          <li>
+            <h3>Choose the COM port</h3>
+            <p>In <em>PTT settings</em>, select the port marked <strong>★ Digirig</strong> and keep
+              <strong>RTS</strong> (the Digirig default). The chip at the top turns green:
+              <em>COM port: COMx (RTS)</em>.</p>
+          </li>
+          <li>
+            <h3>Set a hotkey (optional)</h3>
+            <p>Click <em>Assign…</em> and press a key or a mouse side button. It keys the radio even while you are in
+              another application.</p>
+          </li>
+          <li>
+            <h3>Set your TX level</h3>
+            <p>Hold PTT on a quiet frequency or into a dummy load and ask for a signal report. Start around
+              <strong>−26&nbsp;dB</strong> and adjust the <em>Level to radio</em> slider: Digirig inputs are sensitive,
+              so a little goes a long way.</p>
+          </li>
+          <li>
+            <h3>Enjoy</h3>
+            <p>Switch to the <em>Compact</em> view and keep DeskPTT in a corner of the screen. Use
+              <strong>T-CALL</strong> to open repeaters that need a 1750&nbsp;Hz tone.</p>
+          </li>
+        </ol>
+        <p class="more">More details: <a href="https://github.com/f4izc/DeskPTT#readme">README</a> ·
+          <a href="https://github.com/f4izc/DeskPTT/blob/main/docs/GUIDE.fr.md">Guide en français</a></p>
+      </div>
+    </section>
+
+    <section id="faq" class="faq">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Which radios work?</summary>
+          <p>Any transceiver you can feed audio to and key through the interface: most VHF/UHF FM mobiles and
+            handhelds. DeskPTT was developed with an Icom ID-5200. It does not use CAT, so the radio model does not
+            matter as long as the cable is right.</p>
+        </details>
+        <details>
+          <summary>I hear a high-pitched whistle.</summary>
+          <p>Many USB audio codecs leak 1&nbsp;kHz USB frame noise. Keep <em>USB whistle filter</em> checked (on by
+            default): it notches 1–4&nbsp;kHz and low-passes at 3.4&nbsp;kHz.</p>
+        </details>
+        <details>
+          <summary>Can I use DeskPTT and VARA at the same time?</summary>
+          <p>No: only one program can open the COM port. Close one before using the other.</p>
+        </details>
+        <details>
+          <summary>Mac or Linux?</summary>
+          <p>Windows 10/11 x64 today. A macOS version is planned; the code is open if you want to help.</p>
+        </details>
+        <details>
+          <summary>Is it safe for my transmitter?</summary>
+          <p>DeskPTT is designed to fail to “PTT off”: crash, reload, unplugged port or exit all release PTT, and the
+            time-out timer cuts long transmissions. It is still experimental software for amateur radio use: you
+            remain responsible for your station and your emissions.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <p><img src="icon.svg" alt="" width="20" height="20"> <strong>DeskPTT</strong> — built by a ham, for hams.
+        Stephane Tauziede, F4IZC. Vibecoded with Claude.</p>
+      <p>Free software under the <a href="https://github.com/f4izc/DeskPTT/blob/main/LICENSE">Apache License 2.0</a> ·
+        <a href="https://github.com/f4izc/DeskPTT/blob/main/THIRD_PARTY_NOTICES.md">third-party licenses</a> ·
+        <a href="https://github.com/f4izc/DeskPTT">source code</a> ·
+        <a href="https://github.com/f4izc/DeskPTT/issues">report an issue</a></p>
+      <p class="small">Digirig, Icom, Windows and other names are trademarks of their respective owners. DeskPTT is
+        not affiliated with them. No tracking, no cookies on this page.</p>
+    </div>
+  </footer>
+</body>
+</html>
