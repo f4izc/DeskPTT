@@ -163,6 +163,10 @@
           <p>Any transceiver you can feed audio to and key through the interface: most VHF/UHF FM mobiles and
             handhelds. DeskPTT was developed with an Icom ID-5200. It does not use CAT, so the radio model does not
             matter as long as the cable is right.</p>
+          <p>Your audio interface must also be able to key the PTT: DeskPTT drives it through a COM port line
+            (RTS or DTR), as on interfaces that pair a CM108-type USB sound chip with a USB-serial chip.
+            PTT through the CM108 chip's own GPIO pin is not supported yet. If your interface cannot key the radio,
+            use the radio's VOX: DeskPTT still carries the audio both ways.</p>
         </details>
         <details>
           <summary>I hear a high-pitched whistle.</summary>
