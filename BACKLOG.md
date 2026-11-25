@@ -5,6 +5,11 @@ Safety rule for every item: anything that can key the transmitter must fail to "
 
 ## Planned
 
+### Generic interface wording in the app
+The app UI still names the Digirig ("Radio audio (Digirig → PC)", "RTS (Digirig default)", "★ Digirig",
+compact summary "Digirig → …"). Replace it with generic "interface" wording in `renderer/i18n.js` (EN + FR),
+keep the ★ marker for CP210x ports, then retake the screenshots in `site/img/` and the README.
+
 ### PTT through the CM108 GPIO (HID)
 Many CM108/CM119-based interfaces (AllStar-style, DMK URI, home-made boards) have no USB-serial chip:
 PTT is wired to a GPIO pin of the sound chip itself, usually **GPIO3**, driven through a USB HID output report.
