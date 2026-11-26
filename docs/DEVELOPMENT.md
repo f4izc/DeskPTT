@@ -40,7 +40,8 @@ tools/
   (`rxGen` discards a `startRx()` overtaken by a newer one); with it off, the chain stays open.
   The notches/low-pass switch to all-pass / 20 kHz when the USB whistle filter is off.
 - **TX**: `getUserMedia(PC mic)` → mic gain (0 during T-CALL) → voice enhancer ┐
-  `OscillatorNode 1750 Hz` → tone gain (0.35 during T-CALL) ┴→ level (dB) → PTT gate → `AudioContext({ sinkId: interface })`.
+  `OscillatorNode 1750 Hz` → tone gain (0.35 during T-CALL) ┤
+  DTMF: 2 oscillators (0.16 low group, 0.2 high group) → dtmf gain ┴→ level (dB) → PTT gate → `AudioContext({ sinkId: interface })`.
   The meter shows the mic level *before* attenuation.
 - Each chain uses its own `AudioContext` so that each can target a different output device.
 - Processing is disabled on purpose (`echoCancellation`, `autoGainControl` off; `noiseSuppression` optional).
@@ -50,6 +51,12 @@ tools/
 All presses go through `pttPress/pttRelease` (idempotent) or `tcallPress/tcallRelease` in `main.js`.
 `setPtt(on)` raises the line immediately; on release the audio gate closes at once and the line drops
 after `tailMs`. Any crash, reload, window close or COM port loss forces PTT off.
+
+**DTMF** (renderer, `dtmfDown/dtmfUp`): a key keys the radio through `tcallPress` when PTT is off (the
+DTMF pad then "owns" PTT), schedules the tone on the audio clock (300 ms lead after keying, 150 ms
+minimum) and mutes the mic; `tcallRelease` is sent 1.5 s after the last key. Any PTT drop from elsewhere
+(`ptt-state` off: TOT, PTT release, port loss) resets the pad. Pressing T-CALL during the hang takes
+over the PTT ownership.
 
 **CM108 GPIO**: `listPorts()` appends the HID devices of known sound chips (C-Media VID `0d8c`, SSS `0c76`,
 AIOC `1209:7388`; other USB codecs such as the IC-7300's are left out) with a `hid:` path. `writeLine()`

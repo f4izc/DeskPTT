@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **DTMF keypad**: the new **DTMF** button, right of T-CALL, opens a phone-style keypad (0–9, `*`, `#`)
+  for repeaters and connected hotspots (change room, trigger functions). A key keys the radio if needed
+  and sends its tone while held; transmission ends 1.5 s after the last key. The keypad sits to the
+  right of the buttons in the Advanced view and below them in the Compact view.
 - **Voice enhancer** on transmit (off by default): 90 Hz high-pass, soft expander (background noise
   between words about 10 dB lower), bass boost (+5 dB shelf below 250 Hz) and light 3:1 compression.
   Peaks stay at about the same level, so the *Level to radio* setting does not need changing; quiet

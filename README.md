@@ -79,6 +79,7 @@ Windows names the interface from the PC's point of view: the interface's **"Micr
 | Noise gate | Cuts the background hiss of the interface when the radio receives nothing. Threshold −60…−20 dB, shown as a white mark on the receive meter: put it just above the hiss (off by default) |
 | Voice enhancer | Transmit: 90 Hz high-pass, background noise between words lowered by about 10 dB, bass boost (+5 dB below 250 Hz), light 3:1 compression. Peaks stay about the same, quiet syllables come out louder (off by default) |
 | T-CALL | Hold to transmit a 1750 Hz tone (repeater access); follows the *Level to radio* setting |
+| DTMF | The **DTMF** button opens a phone-style keypad (0–9, `*`, `#`) for repeaters and connected hotspots (change room, trigger functions). Each key keys the radio if needed and sends its tone while held (150 ms minimum, first tone 300 ms after keying so the carrier is detected); transmission ends 1.5 s after the last key, so a sequence goes out in one transmission. Follows the *Level to radio* setting |
 | Transmit control (About → Settings) | *PTT via the COM port* (default) or *Radio VOX*: DeskPTT then never opens the COM port; the **VOX / MUTE** button (and hotkey, following the *Mode*) opens or mutes the audio sent to the radio. Always starts muted. |
 
 PTT is released automatically when the TOT expires, when the app closes or crashes, when the COM port or

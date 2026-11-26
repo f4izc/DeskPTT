@@ -81,6 +81,7 @@
     </section>
 
     <section class="ptt-zone">
+      <div class="ptt-main">
       <div class="ptt-row">
         <button id="ptt" class="ptt" type="button" aria-pressed="false">
           <span id="pttLabel" class="ptt-label">PTT</span>
@@ -90,8 +91,27 @@
           <span class="ptt-label">T-CALL</span>
           <span class="ptt-sub">1750 Hz</span>
         </button>
+        <button id="dtmfBtn" class="ptt tcall dtmf-btn" type="button" aria-expanded="false" aria-controls="dtmfPad" data-i18n-title="dtmf.title">
+          <span class="ptt-label">DTMF</span>
+          <span class="ptt-sub">0–9 * #</span>
+        </button>
       </div>
       <p id="pttHint" class="hint"></p>
+      </div>
+      <div id="dtmfPad" class="dtmf-pad" hidden data-i18n-title="dtmf.hint">
+        <button type="button" data-key="1"><b>1</b><small>&nbsp;</small></button>
+        <button type="button" data-key="2"><b>2</b><small>ABC</small></button>
+        <button type="button" data-key="3"><b>3</b><small>DEF</small></button>
+        <button type="button" data-key="4"><b>4</b><small>GHI</small></button>
+        <button type="button" data-key="5"><b>5</b><small>JKL</small></button>
+        <button type="button" data-key="6"><b>6</b><small>MNO</small></button>
+        <button type="button" data-key="7"><b>7</b><small>PQRS</small></button>
+        <button type="button" data-key="8"><b>8</b><small>TUV</small></button>
+        <button type="button" data-key="9"><b>9</b><small>WXYZ</small></button>
+        <button type="button" data-key="*"><b>*</b><small>&nbsp;</small></button>
+        <button type="button" data-key="0"><b>0</b><small>+</small></button>
+        <button type="button" data-key="#"><b>#</b><small>&nbsp;</small></button>
+      </div>
     </section>
 
     <section class="card wide advanced-only">

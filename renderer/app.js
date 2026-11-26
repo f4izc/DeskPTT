@@ -239,6 +239,20 @@ async function startTx() {
     tx.tone.gain.value = toneOn ? TONE_LEVEL : 0;
     tx.osc.connect(tx.tone).connect(tx.gain);
     tx.osc.start();
+    // DTMF : deux oscillateurs (groupe bas + groupe haut), muets hors touche.
+    tx.dtmfLo = tx.ctx.createOscillator();
+    tx.dtmfHi = tx.ctx.createOscillator();
+    tx.dtmf = tx.ctx.createGain();
+    tx.dtmf.gain.value = 0;
+    const loAmp = tx.ctx.createGain();
+    const hiAmp = tx.ctx.createGain();
+    loAmp.gain.value = DTMF_LO_LEVEL;
+    hiAmp.gain.value = DTMF_HI_LEVEL;
+    tx.dtmfLo.connect(loAmp).connect(tx.dtmf);
+    tx.dtmfHi.connect(hiAmp).connect(tx.dtmf);
+    tx.dtmf.connect(tx.gain);
+    tx.dtmfLo.start();
+    tx.dtmfHi.start();
     tx.gain.connect(tx.gate).connect(tx.ctx.destination);
   } catch (e) {
     if (gen !== txGen) return;
@@ -274,6 +288,10 @@ function bindTcallButton() {
   b.addEventListener('pointerdown', (e) => {
     if (e.button !== 0) return;
     b.setPointerCapture(e.pointerId);
+    // Émission ouverte par le pavé DTMF : le T-CALL la reprend (elle retombera
+    // à son relâchement, pas à la fin du délai DTMF).
+    clearTimeout(dtmfHangTimer);
+    dtmfOwnsPtt = false;
     setTone(true);
     api.tcallPress();
   });
@@ -286,6 +304,104 @@ function bindTcallButton() {
   b.addEventListener('pointercancel', up);
   b.addEventListener('lostpointercapture', up);
   b.addEventListener('keydown', (e) => e.preventDefault());
+}
+
+// ---------------------------------------------------------------- DTMF
+
+// Pavé type téléphone pour les relais et hotspots (changement de room,
+// commandes). Une touche passe en émission si besoin, envoie sa tonalité tant
+// qu'elle est maintenue (durée minimale garantie), et l'émission retombe
+// DTMF_HANG_MS après la dernière touche : une suite de chiffres part d'un bloc.
+const DTMF_FREQS = {
+  '1': [697, 1209], '2': [697, 1336], '3': [697, 1477],
+  '4': [770, 1209], '5': [770, 1336], '6': [770, 1477],
+  '7': [852, 1209], '8': [852, 1336], '9': [852, 1477],
+  '*': [941, 1209], '0': [941, 1336], '#': [941, 1477],
+};
+const DTMF_LO_LEVEL = 0.16;   // groupe haut +2 dB (« twist » habituel)
+const DTMF_HI_LEVEL = 0.2;    // crête ≈ 0,36, comme la tonalité 1750 Hz
+const DTMF_LEAD_MS = 300;     // si on vient de passer en émission : le poste, le relais
+                              // ou le hotspot doivent détecter la porteuse avant le 1er chiffre
+const DTMF_MIN_MS = 150;      // un clic bref envoie quand même une tonalité décodable
+const DTMF_HANG_MS = 1500;    // émission maintenue entre deux touches
+let dtmfOwnsPtt = false;
+let dtmfHangTimer = null;
+let dtmfKeyDown = null;       // { key, endMin } : fin au plus tôt (temps du contexte audio)
+
+function dtmfDown(key) {
+  const f = DTMF_FREQS[key];
+  if (!f || !tx.dtmf || dtmfKeyDown) return;
+  clearTimeout(dtmfHangTimer);
+  let lead = 0;
+  if (!pttOn) {
+    api.tcallPress(); // passage en émission « momentané », comme le T-CALL
+    dtmfOwnsPtt = true;
+    lead = DTMF_LEAD_MS / 1000;
+  }
+  const t0 = tx.ctx.currentTime + lead;
+  tx.dtmfLo.frequency.setValueAtTime(f[0], t0);
+  tx.dtmfHi.frequency.setValueAtTime(f[1], t0);
+  tx.dtmf.gain.cancelScheduledValues(tx.ctx.currentTime);
+  tx.dtmf.gain.setValueAtTime(0, tx.ctx.currentTime);
+  tx.dtmf.gain.setTargetAtTime(1, t0, 0.002);
+  tx.mic.gain.cancelScheduledValues(tx.ctx.currentTime);
+  tx.mic.gain.setTargetAtTime(0, tx.ctx.currentTime, 0.004);
+  dtmfKeyDown = { key, endMin: t0 + DTMF_MIN_MS / 1000 };
+  const btn = document.querySelector(`#dtmfPad [data-key="${CSS.escape(key)}"]`);
+  if (btn) btn.classList.add('on');
+}
+
+function dtmfUp() {
+  if (!dtmfKeyDown || !tx.ctx) { dtmfKeyDown = null; return; }
+  const tEnd = Math.max(tx.ctx.currentTime, dtmfKeyDown.endMin);
+  tx.dtmf.gain.setTargetAtTime(0, tEnd, 0.002);
+  if (!toneOn) tx.mic.gain.setTargetAtTime(1, tEnd + 0.01, 0.004);
+  document.querySelectorAll('#dtmfPad .on').forEach((b) => b.classList.remove('on'));
+  dtmfKeyDown = null;
+  if (dtmfOwnsPtt) {
+    const wait = (tEnd - tx.ctx.currentTime) * 1000 + DTMF_HANG_MS;
+    dtmfHangTimer = setTimeout(() => {
+      if (dtmfOwnsPtt && !dtmfKeyDown) { dtmfOwnsPtt = false; api.tcallRelease(); }
+    }, wait);
+  }
+}
+
+// PTT retombé par ailleurs (TOT, relâchement du PTT, port perdu…) : tout s'arrête.
+function dtmfReset() {
+  clearTimeout(dtmfHangTimer);
+  dtmfOwnsPtt = false;
+  dtmfKeyDown = null;
+  if (tx.dtmf) {
+    tx.dtmf.gain.cancelScheduledValues(tx.ctx.currentTime);
+    tx.dtmf.gain.setTargetAtTime(0, tx.ctx.currentTime, 0.002);
+    if (!toneOn) ramp(tx.mic, tx.ctx, 1);
+  }
+  document.querySelectorAll('#dtmfPad .on').forEach((b) => b.classList.remove('on'));
+}
+
+function bindDtmf() {
+  const toggle = $('dtmfBtn');
+  const pad = $('dtmfPad');
+  const show = async (open) => {
+    pad.hidden = !open;
+    toggle.classList.toggle('open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (!open) dtmfUp();
+    if (windowFitted) await fitWindow();
+  };
+  toggle.addEventListener('click', () => show(pad.hidden));
+  toggle.addEventListener('keydown', (e) => e.preventDefault());
+  for (const b of pad.querySelectorAll('button[data-key]')) {
+    b.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      b.setPointerCapture(e.pointerId);
+      dtmfDown(b.dataset.key);
+    });
+    b.addEventListener('pointerup', dtmfUp);
+    b.addEventListener('pointercancel', dtmfUp);
+    b.addEventListener('lostpointercapture', dtmfUp);
+    b.addEventListener('keydown', (e) => e.preventDefault());
+  }
 }
 
 // Active ou neutralise les filtres anti-sifflement (un notch à Q ~0 = transparent
@@ -839,6 +955,7 @@ async function init() {
   bindSettings(state.hookOk);
   bindPttButton();
   bindTcallButton();
+  bindDtmf();
   bindWindowInput();
   $('viewAdvanced').addEventListener('click', () => setView('advanced'));
   $('viewCompact').addEventListener('click', () => setView('compact'));
@@ -857,6 +974,7 @@ async function init() {
     pttOn = p.on;
     pttSince = p.since;
     totSeconds = p.totSeconds;
+    if (!p.on) dtmfReset();
     applyPttAudio();
     renderPtt();
   });

@@ -230,8 +230,11 @@ body.compact .hint { display: none; }
 .meter.mini { height: 6px; }
 
 /* ---------- PTT / T-CALL */
-.ptt-zone { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 4px 0; }
-.ptt-row { display: flex; gap: 10px; width: min(440px, 100%); }
+/* PTT/T-CALL/DTMF + consigne ; le pavé DTMF se place à droite s'il y a la place
+   (vue avancée, pas de hauteur ajoutée), sinon dessous (vue compacte). */
+.ptt-zone { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 8px 16px; padding: 4px 0; }
+.ptt-main { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 0 1 560px; min-width: 0; }
+.ptt-row { display: flex; gap: 10px; width: min(560px, 100%); }
 .ptt-row .ptt { flex: 1; width: auto; }
 .ptt-row .tcall { flex: 0 0 110px; }
 .tcall .ptt-label { font-size: 18px; letter-spacing: .06em; }
@@ -264,3 +267,39 @@ body.compact .hint { display: none; }
   box-shadow: 0 0 0 6px rgba(229, 72, 77, .25);
 }
 .ptt.on .ptt-sub { color: #fff; }
+
+/* ---------- DTMF */
+.ptt.dtmf-btn.open { border-color: var(--accent); }
+.dtmf-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 60px);
+  gap: 6px;
+}
+.dtmf-pad[hidden] { display: none; }
+.dtmf-pad button {
+  height: 36px;
+  padding: 0;
+  border-radius: 10px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+  user-select: none;
+  touch-action: none;
+  cursor: pointer;
+}
+.dtmf-pad button b { font-size: 17px; }
+.dtmf-pad button small { font-size: 8px; color: var(--muted); letter-spacing: .08em; }
+.dtmf-pad button:hover { border-color: var(--accent); }
+.dtmf-pad button.on {
+  background: var(--warn);
+  border-color: #ffc861;
+  color: #1b1300;
+}
+.dtmf-pad button.on small { color: #1b1300; }
+body.compact .dtmf-pad { grid-template-columns: repeat(3, 1fr); width: min(300px, 100%); }

@@ -61,6 +61,15 @@ Tant qu'il est maintenu, le poste passe en émission et reçoit une tonalité 17
 pendant la tonalité). Au relâchement, l'émission s'arrête. Si le PTT était déjà actif (mode bascule),
 seule la tonalité s'arrête. La tonalité suit le réglage « Niveau vers le poste ».
 
+## Pavé DTMF
+
+Le bouton **DTMF**, à droite du T-CALL, affiche un pavé de téléphone (0–9, `*`, `#`) pour les relais et
+les hotspots connectés : changer de room, déclencher une fonction. Chaque touche passe le poste en
+émission si besoin et envoie sa tonalité tant qu'elle est maintenue (150 ms minimum ; la première
+tonalité part 300 ms après le passage en émission, le temps que la porteuse soit détectée). L'émission
+s'arrête 1,5 s après la dernière touche : une suite de chiffres part en une seule émission. Le micro est
+coupé pendant les tonalités, qui suivent le réglage « Niveau vers le poste ».
+
 ## Mode VOX du poste
 
 Si votre interface ne peut pas commander le PTT, utilisez le VOX du poste : bouton **i** (À propos) →
