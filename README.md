@@ -97,6 +97,35 @@ is available from the **i** (About) button.
 the air during TX), and set *Sound settings → Communications* to *Do nothing* so Windows doesn't duck
 your audio.
 
+## Tested hardware
+
+"Tested OK" means the hardware works with DeskPTT: audio in both directions and PTT. It is **not** a
+guarantee of audio quality: see [noise and whistles](#noise-and-whistles) below the table.
+
+| Type | Model | PTT / connection | Result |
+|---|---|---|---|
+| Interface | [Digirig](https://digirig.net/) Mobile, first generation | COM port (Silicon Labs CP210x), RTS line | ✅ Tested OK |
+| Interface | Digirig Lite | CM108 GPIO (C-Media CM119-type chip), GPIO 3 | ✅ Tested OK |
+| Transceiver | Icom ID-5200 | Through the interface | ✅ Tested OK |
+| Transceiver | Icom ID-52 Plus | Through the interface | ✅ Tested OK |
+
+DeskPTT is not specific to this hardware: any interface built the same way (USB sound card plus a COM
+port line or a CM108-type GPIO) should work.
+
+### Noise and whistles
+
+Every station is different. Depending on your setup and environment (PC, USB ports and hubs, cables,
+ground loops, power supplies, the radio's own USB link, RF pickup, drivers…), hiss, hum or whistles can
+appear, from many possible causes that DeskPTT cannot control. The receive filters, the noise gate and
+the voice enhancer help, but they cannot fix every case.
+
+**Field note (TX whistle)**: on the author's station (ID-5200 also connected to the PC by its own USB
+cable, cooling fan running during TX), the first-generation Digirig Mobile added a constant whistle to the
+transmitted audio, independent of DeskPTT's level and present as soon as audio flowed through the
+interface. With a Digirig Lite on the same PC, radio and cables, the whistle was almost gone. If you hear
+a whistle on TX that the *Level to radio* slider does not change, it is added after DeskPTT: try another
+interface, check for a ground loop (USB isolator, a single USB link to the radio) and the mic driver.
+
 ## Build from source
 
 Requirements: Windows 10/11 x64, [Node.js](https://nodejs.org/) 22 LTS, Git.
@@ -166,16 +195,7 @@ DeskPTT stands on the shoulders of these free and open-source projects and resou
 
 **Hardware, standards and documentation**
 
-- Tested with a [Digirig](https://digirig.net/) Mobile interface (C-Media style USB audio codec, Silicon Labs
-  CP210x USB-to-UART bridge whose RTS line keys the radio), a Digirig Lite (C-Media CM119-type sound chip,
-  PTT on its GPIO 3) and an Icom ID-5200 VHF/UHF transceiver.
-  DeskPTT is not specific to this hardware: any interface built the same way works.
-- **Field note (TX whistle)**: on the author's station (ID-5200 also connected to the PC by its own USB
-  cable, cooling fan running during TX), a first-generation Digirig Mobile added a constant whistle to the
-  transmitted audio, independent of DeskPTT's level and present as soon as audio flowed through the
-  interface. With a Digirig Lite on the same PC, radio and cables, the whistle was almost gone. If you hear
-  a whistle on TX that the *Level to radio* slider does not change, it is added after DeskPTT: try another
-  interface, check for a ground loop (USB isolator, a single USB link to the radio) and the mic driver.
+- Hardware used for testing: see [Tested hardware](#tested-hardware).
 - CM108 GPIO output report format as used by [Direwolf](https://github.com/wb2osz/direwolf) and
   [Hamlib](https://github.com/Hamlib/Hamlib) (C-Media CM108 datasheet: GPIO data, then GPIO direction).
 - 1750 Hz tone-burst repeater access, as commonly used on IARU Region 1 FM repeaters.
