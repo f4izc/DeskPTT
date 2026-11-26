@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0 — 2026-11-26
 
 - **DTMF keypad**: the new **DTMF** button, right of T-CALL, opens a phone-style keypad (0–9, `*`, `#`)
   for repeaters and connected hotspots (change room, trigger functions). A key keys the radio if needed

@@ -1,7 +1,7 @@
 {
   "name": "deskptt",
   "productName": "DeskPTT",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a USB audio interface (USB sound card + COM port or CM108 GPIO PTT).",
   "author": "Stephane Tauziede (F4IZC)",
   "license": "Apache-2.0",
