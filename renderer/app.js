@@ -183,14 +183,27 @@ async function startRx(fadeIn = false) {
   }
 }
 
+// Comme pour l'écoute : un startTx() dépassé par un plus récent abandonne et
+// ferme ce qu'il a ouvert. Sinon un second AudioContext orphelin peut continuer
+// d'envoyer le micro au poste (voix doublée, écho) sans que la porte PTT le coupe.
+let txGen = 0;
+
 async function startTx() {
+  const gen = ++txGen;
   teardown(tx);
   const inId = settings.headsetIn && settings.headsetIn.id;
   const outId = settings.rigOut && settings.rigOut.id;
   if (!inId || !outId) return;
   try {
-    tx.stream = await openMic(inId, settings.noiseSuppression);
-    tx.ctx = await makeContext(outId);
+    const stream = await openMic(inId, settings.noiseSuppression);
+    if (gen !== txGen) return stream.getTracks().forEach((tr) => tr.stop());
+    tx.stream = stream;
+    const ctx = await makeContext(outId);
+    if (gen !== txGen) {
+      stream.getTracks().forEach((tr) => tr.stop());
+      return ctx.close().catch(() => {});
+    }
+    tx.ctx = ctx;
     const src = tx.ctx.createMediaStreamSource(tx.stream);
     tx.analyser = tx.ctx.createAnalyser();
     tx.analyser.fftSize = 1024;
@@ -216,6 +229,7 @@ async function startTx() {
     tx.osc.start();
     tx.gain.connect(tx.gate).connect(tx.ctx.destination);
   } catch (e) {
+    if (gen !== txGen) return;
     teardown(tx);
     banner(t('err.txOpen', { msg: e.message }));
   }

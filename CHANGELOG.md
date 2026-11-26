@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Fix: restarting the transmit audio twice in a row (e.g. device change) could leave an orphaned copy of
+  the microphone stream sending to the radio (doubled voice / echo). An overtaken start now closes what
+  it opened.
+
 ## 1.2.0 — 2026-11-26
 
 - **PTT through the GPIO pin of CM108-type sound cards** (CM108/CM119, SSS1621/1623, AIOC), for
