@@ -124,11 +124,27 @@ input[type=checkbox] { accent-color: var(--accent); }
 .keycap.capturing { border-color: var(--warn); color: var(--warn); }
 
 .meter {
+  position: relative;
   height: 8px;
   border-radius: 4px;
   background: var(--panel-2);
   overflow: hidden;
 }
+/* Seuil de la porte de bruit, sur le vumètre de réception. */
+.gate-mark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  opacity: .85;
+}
+.gate-mark[hidden] { display: none; }
+.gate-row { display: flex; align-items: center; gap: 10px; }
+.gate-row label.check { flex: none; }
+.gate-row input[type=range] { flex: 1; min-width: 0; }
+.gate-row input[type=range]:disabled { opacity: .4; }
 .bar {
   height: 100%;
   width: 0;

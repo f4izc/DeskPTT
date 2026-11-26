@@ -169,7 +169,13 @@ async function startRx(fadeIn = false) {
     rx.lowpass = lp;
     node = node.connect(lp);
     wireRxFilter();
+    // Le vumètre est pris avant la porte de bruit : on y voit le souffle, ce
+    // qui sert à placer le seuil (repère sur le vumètre).
     node.connect(rx.analyser);
+    rx.noiseGate = await makeRxGate(rx.ctx);
+    if (gen !== rxGen) return; // teardown() du startRx() suivant a déjà fermé ce contexte
+    if (rx.noiseGate) node = node.connect(rx.noiseGate);
+    wireRxGate();
     node.connect(rx.gain).connect(rx.mute).connect(rx.ctx.destination);
     if (fadeIn) {
       // Réouverture après l'émission : montée douce, sans le clic d'ouverture.
@@ -282,6 +288,34 @@ function wireRxFilter() {
   if (!rx.notches) return;
   for (const n of rx.notches) n.type = settings.rxNotch ? 'notch' : 'allpass';
   if (rx.lowpass) rx.lowpass.frequency.value = settings.rxNotch ? 3400 : 20000;
+}
+
+// Porte de bruit de la réception (renderer/rx-gate-worklet.js) : coupe le
+// souffle de l'interface quand le poste ne reçoit rien. Si le module ne se
+// charge pas, l'écoute fonctionne sans porte.
+async function makeRxGate(ctx) {
+  try {
+    await ctx.audioWorklet.addModule('rx-gate-worklet.js');
+    return new AudioWorkletNode(ctx, 'rx-gate');
+  } catch (e) {
+    console.error('rx gate', e);
+    return null;
+  }
+}
+
+function wireRxGate() {
+  const g = rx.noiseGate;
+  if (g) {
+    g.parameters.get('enabled').value = settings.rxGate ? 1 : 0;
+    g.parameters.get('threshold').value = settings.rxGateDb;
+  }
+  const mark = $('rxGateMark');
+  if (mark) {
+    // Même échelle que le vumètre : −60 dB → 0 %, 0 dB → 100 %.
+    mark.style.left = Math.max(0, Math.min(100, ((settings.rxGateDb + 60) / 60) * 100)) + '%';
+    mark.hidden = !settings.rxGate;
+  }
+  if ($('rxGateDb')) $('rxGateDb').disabled = !settings.rxGate;
 }
 
 // Après l'émission, l'écoute ne revient qu'une fois le PTT retombé (traîne)
@@ -662,7 +696,21 @@ function bindSettings(hookOk) {
   };
   check('muteRxDuringTx', applyPttAudio);
   check('rxNotch', wireRxFilter);
+  check('rxGate', wireRxGate);
   check('noiseSuppression', startTx);
+
+  // Seuil de la porte de bruit, en dBFS crête (même échelle que le vumètre).
+  const gateIn = $('rxGateDb');
+  const gateOut = $('rxGateDbOut');
+  gateIn.value = settings.rxGateDb;
+  gateOut.textContent = settings.rxGateDb + ' dB';
+  gateIn.addEventListener('input', () => {
+    settings.rxGateDb = Number(gateIn.value);
+    gateOut.textContent = settings.rxGateDb + ' dB';
+    wireRxGate();
+  });
+  gateIn.addEventListener('change', () => api.saveSettings({ rxGateDb: settings.rxGateDb }));
+  wireRxGate();
 
   const select = (key, after) => {
     $(key).value = settings[key];

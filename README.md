@@ -76,6 +76,7 @@ Windows names the interface from the PC's point of view: the interface's **"Micr
 | PTT tail | Delay between cutting the audio and releasing PTT, so the end of your words is not clipped |
 | Mute listening while transmitting | Avoids hearing the radio's own audio in your headset during TX |
 | USB whistle filter | Notch filters at 1, 2, 3, 4 kHz + 3.4 kHz low-pass against USB frame noise (on by default) |
+| Noise gate | Cuts the background hiss of the interface when the radio receives nothing. Threshold −60…−20 dB, shown as a white mark on the receive meter: put it just above the hiss (off by default) |
 | T-CALL | Hold to transmit a 1750 Hz tone (repeater access); follows the *Level to radio* setting |
 | Transmit control (About → Settings) | *PTT via the COM port* (default) or *Radio VOX*: DeskPTT then never opens the COM port; the **VOX / MUTE** button (and hotkey, following the *Mode*) opens or mutes the audio sent to the radio. Always starts muted. |
 

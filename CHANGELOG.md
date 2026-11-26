@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Receive noise gate** (off by default): cuts the interface's background hiss when the radio receives
+  nothing. The threshold (−60…−20 dB) shows as a white mark on the receive meter.
 - Fix: restarting the transmit audio twice in a row (e.g. device change) could leave an orphaned copy of
   the microphone stream sending to the radio (doubled voice / echo). An overtaken start now closes what
   it opened.

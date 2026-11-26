@@ -49,6 +49,7 @@ Windows nomme l'interface du point de vue de l'ordinateur : son « Microphone »
 | Traîne PTT | Délai entre la coupure du son et la retombée du PTT, pour ne pas tronquer la fin |
 | Couper l'écoute pendant l'émission | Évite d'entendre le retour du poste dans le casque en TX |
 | Filtre anti-sifflement USB | Coupe-bande 1/2/3/4 kHz + passe-bas 3,4 kHz (activé par défaut) |
+| Porte de bruit | Coupe le souffle de fond de l'interface quand le poste ne reçoit rien. Seuil −60…−20 dB, visible en repère blanc sur le vumètre de réception : placez-le juste au-dessus du souffle (désactivée par défaut) |
 
 Les réglages sont enregistrés dans `%APPDATA%\DeskPTT\settings.json`.
 

@@ -19,6 +19,8 @@ const STRINGS = {
     'rx.volume': 'Volume',
     'rx.mute': 'Mute listening while transmitting',
     'rx.notch': 'USB whistle filter (1 kHz and harmonics, 3.4 kHz low-pass)',
+    'rx.gate': 'Noise gate',
+    'rx.gateHint': 'Threshold: put the white mark on the meter just above the background hiss',
 
     'tx.title': 'Transmit',
     'tx.sub': 'computer → radio',
@@ -137,6 +139,8 @@ const STRINGS = {
     'rx.volume': 'Volume',
     'rx.mute': "Couper l'écoute pendant l'émission",
     'rx.notch': 'Filtre anti-sifflement USB (1 kHz et harmoniques, passe-bas 3,4 kHz)',
+    'rx.gate': 'Porte de bruit',
+    'rx.gateHint': 'Seuil : placez le repère blanc du vumètre juste au-dessus du souffle de fond',
 
     'tx.title': 'Émission',
     'tx.sub': 'ordinateur → poste',

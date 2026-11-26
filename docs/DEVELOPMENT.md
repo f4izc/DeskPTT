@@ -24,8 +24,12 @@ tools/
 
 ### Audio graph (renderer/app.js)
 
-- **RX**: `getUserMedia(interface input)` → notch 1/2/3/4 kHz (Q 8) → low-pass 3.4 kHz → volume →
-  mute → `AudioContext({ sinkId: headset })`. With *Mute listening while transmitting* on, the whole RX
+- **RX**: `getUserMedia(interface input)` → notch 1/2/3/4 kHz (Q 8) → low-pass 3.4 kHz → noise gate →
+  volume → mute → `AudioContext({ sinkId: headset })`. The meter is tapped before the gate (so the hiss
+  stays visible to set the threshold). The gate is an AudioWorklet (`renderer/rx-gate-worklet.js`, audio
+  thread, so it keeps working with the window minimized): peak detector, opens in ~3 ms above the
+  threshold, closes 6 dB below it after a 300 ms hold with an 80 ms release. If the module fails to
+  load, RX works without it. With *Mute listening while transmitting* on, the whole RX
   chain (capture included) is closed during TX and reopened with a short fade-in after `tailMs + 400 ms`
   (`rxGen` discards a `startRx()` overtaken by a newer one); with it off, the chain stays open.
   The notches/low-pass switch to all-pass / 20 kHz when the USB whistle filter is off.
