@@ -119,12 +119,13 @@ ground loops, power supplies, the radio's own USB link, RF pickup, drivers…), 
 appear, from many possible causes that DeskPTT cannot control. The receive filters, the noise gate and
 the voice enhancer help, but they cannot fix every case.
 
-**Field note (TX whistle)**: on the author's station (ID-5200 also connected to the PC by its own USB
-cable, cooling fan running during TX), the first-generation Digirig Mobile added a constant whistle to the
-transmitted audio, independent of DeskPTT's level and present as soon as audio flowed through the
-interface. With a Digirig Lite on the same PC, radio and cables, the whistle was almost gone. If you hear
-a whistle on TX that the *Level to radio* slider does not change, it is added after DeskPTT: try another
-interface, check for a ground loop (USB isolator, a single USB link to the radio) and the mic driver.
+**Field note (TX whistle)**: on the author's station (radio also connected to the PC by its own USB
+cable, cooling fan running during TX), a constant whistle was once added to the transmitted audio,
+independent of DeskPTT's level and present as soon as audio flowed through the interface. Changing the
+interface on the same PC, radio and cables made it almost disappear. This says more about how that
+particular station is wired than about any product. If you hear a whistle on TX that the *Level to radio*
+slider does not change, it is added after DeskPTT: try another interface or USB port, check for a ground
+loop (USB isolator, a single USB link to the radio) and the mic driver.
 
 ## Build from source
 
