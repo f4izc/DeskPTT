@@ -19,6 +19,13 @@ try {
   console.error('serialport indisponible :', e.message);
 }
 
+let HID = null;
+try {
+  HID = require('node-hid');
+} catch (e) {
+  console.error('node-hid indisponible :', e.message);
+}
+
 let uIOhook = null;
 let UiohookKey = null;
 try {
@@ -34,8 +41,8 @@ const DEFAULTS = {
   headsetOut: null,
   rigIn: null,
   rigOut: null,
-  serialPath: null,
-  pttLine: 'rts',    // 'rts' | 'dtr'
+  serialPath: null,  // 'COM11'… ou 'hid:<chemin>' pour une carte son type CM108
+  pttLine: 'rts',    // 'rts' | 'dtr' (port COM) ; 'gpio1'…'gpio4' (CM108)
   mode: 'hold',      // 'hold' | 'toggle'
   totSeconds: 180,   // 0 = désactivé
   tailMs: 150,       // maintien de la ligne PTT après coupure audio
@@ -145,9 +152,95 @@ function setPortStatus(s) {
   send('serial-status', portStatus);
 }
 
+// ---------------------------------------------------------------- PTT par GPIO (CM108)
+// Les puces son USB type CM108/CM119 (C-Media), SSS1621/1623 et l'AIOC exposent
+// des broches GPIO pilotées par un rapport HID de sortie (même format que Direwolf) :
+// [n° de rapport 0, 0, niveaux, directions (1 = sortie), 0]. GPIO 3 par défaut.
+
+const HID_PREFIX = 'hid:';
+const isHidPath = (p) => typeof p === 'string' && p.startsWith(HID_PREFIX);
+const HID_IDS = [
+  (v) => v === 0x0d8c,                    // C-Media CM108/CM109/CM119…
+  (v) => v === 0x0c76,                    // SSS1621/1623
+  (v, p) => v === 0x1209 && p === 0x7388, // AIOC
+];
+const GPIO_LINES = ['gpio1', 'gpio2', 'gpio3', 'gpio4'];
+const PTT_LINES = ['rts', 'dtr', ...GPIO_LINES];
+
+let hid = null;          // { dev, path } quand une carte CM108 est ouverte
+let hidMask = 0;         // broche pilotée lors de la dernière écriture
+
+function listHid() {
+  if (!HID) return [];
+  const seen = new Set();
+  return HID.devices()
+    .filter((d) => d.path && HID_IDS.some((f) => f(d.vendorId, d.productId)))
+    .filter((d) => !seen.has(d.path) && seen.add(d.path))
+    .map((d) => {
+      const id = `${d.vendorId.toString(16).padStart(4, '0')}:${d.productId.toString(16).padStart(4, '0')}`;
+      return { path: HID_PREFIX + d.path, label: `CM108 GPIO — ${d.product || 'USB Audio'} (${id})`, kind: 'hid' };
+    });
+}
+
+const gpioMask = () => 1 << ((GPIO_LINES.indexOf(settings.pttLine) + 1 || 3) - 1);
+
+function hidWrite(on, mask = gpioMask()) {
+  if (!hid) return false;
+  try {
+    hid.dev.write([0x00, 0x00, on ? mask : 0x00, mask, 0x00]);
+    hidMask = mask;
+    return true;
+  } catch (e) {
+    setPortStatus({ error: { key: 'err.pttRefused', args: { msg: e.message } } });
+    return false;
+  }
+}
+
+function closeHid() {
+  if (!hid) return;
+  const h = hid;
+  hidWrite(false, hidMask || gpioMask());
+  hid = null;
+  try { h.dev.close(); } catch {}
+}
+
+function openHid(hidPath) {
+  const raw = hidPath.slice(HID_PREFIX.length);
+  if (!HID) return setPortStatus({ error: { key: 'err.hidModule' } });
+  // Seuls les périphériques reconnus (liste ci-dessus) peuvent être ouverts.
+  if (!listHid().some((d) => d.path === hidPath)) {
+    return setPortStatus({ open: false, path: null, error: { key: 'err.hidAbsent' } });
+  }
+  let dev;
+  try {
+    dev = new HID.HID(raw);
+  } catch (e) {
+    return setPortStatus({ open: false, path: null, error: { key: 'err.portOpen', args: { port: 'CM108', msg: e.message } } });
+  }
+  hid = { dev, path: hidPath };
+  // La lecture en continu sert à détecter le débranchement (événement 'error').
+  dev.on('data', () => {});
+  dev.on('error', () => {
+    if (!hid || hid.dev !== dev) return;
+    hid = null;
+    try { dev.close(); } catch {}
+    forcePttOff('carte CM108 déconnectée');
+    setPortStatus({ open: false, path: null, error: { key: 'err.hidGone' } });
+  });
+  if (!hidWrite(false)) {
+    hid = null;
+    try { dev.close(); } catch {}
+    return setPortStatus({ open: false, path: null });
+  }
+  setPortStatus({ open: true, path: hidPath, error: null });
+  if (pttOn) hidWrite(true);
+}
+
 function writeLine(on) {
   return new Promise((resolve) => {
-    if (isVox() || !port || !port.isOpen) return resolve(false);
+    if (isVox()) return resolve(false);
+    if (hid) return resolve(hidWrite(on));
+    if (!port || !port.isOpen) return resolve(false);
     const signals = settings.pttLine === 'dtr'
       ? { dtr: on, rts: false }
       : { rts: on, dtr: false };
@@ -162,6 +255,10 @@ function writeLine(on) {
 }
 
 async function closePort() {
+  if (hid) {
+    closeHid();
+    setPortStatus({ open: false, path: null });
+  }
   if (!port) return;
   const p = port;
   port = null;
@@ -179,6 +276,7 @@ async function openPort(portPath) {
   if (!portPath) return setPortStatus({ open: false, path: null, error: null });
   // Mode VOX : le port est mémorisé mais jamais ouvert (aucune ligne PTT pilotée).
   if (isVox()) return setPortStatus({ open: false, path: null, error: null });
+  if (isHidPath(portPath)) return openHid(portPath);
   if (!SerialPort) return setPortStatus({ error: { key: 'err.serialModule' } });
 
   const p = new SerialPort({ path: portPath, baudRate: 9600, autoOpen: false });
@@ -214,18 +312,21 @@ async function openPort(portPath) {
 }
 
 async function listPorts() {
-  if (!SerialPort) return [];
+  let hids = [];
+  try { hids = listHid(); } catch (e) { console.error('Liste HID impossible :', e.message); }
+  if (!SerialPort) return hids;
   try {
     const ports = await SerialPort.list();
     return ports.map((p) => ({
+      kind: 'serial',
       path: p.path,
       label: p.friendlyName || [p.path, p.manufacturer].filter(Boolean).join(' — '),
       // Puce Silicon Labs CP210x (VID 10C4), courante sur les interfaces radio
       likelyInterface: /^10c4$/i.test(p.vendorId || '') || /silicon lab|cp210/i.test(`${p.manufacturer} ${p.friendlyName}`),
-    }));
+    })).concat(hids);
   } catch (e) {
     setPortStatus({ error: { key: 'err.listPorts', args: { msg: e.message } } });
-    return [];
+    return hids;
   }
 }
 
@@ -436,7 +537,9 @@ function registerIpc() {
   ipcMain.handle('save-settings', (_e, patch) => {
     const allowed = Object.keys(DEFAULTS).filter((k) => k !== 'hotkey' && k !== 'serialPath');
     const prevTxMode = settings.txMode;
+    const prevMask = hidMask;
     for (const k of allowed) if (k in patch) settings[k] = patch[k];
+    if ('pttLine' in patch && !PTT_LINES.includes(settings.pttLine)) settings.pttLine = 'rts';
     if ('txMode' in patch) settings.txMode = patch.txMode === 'vox' ? 'vox' : 'ptt';
     if (settings.txMode !== prevTxMode) {
       // Changement PTT ↔ VOX : on repart toujours de « pas d'émission » (MUTE).
@@ -448,6 +551,11 @@ function registerIpc() {
     if (patch.pttLine && port && port.isOpen) {
       // Changement de ligne : on retombe tout, puis on réapplique l'état.
       port.set({ rts: false, dtr: false }, () => writeLine(pttOn));
+    }
+    if (patch.pttLine && hid) {
+      // Changement de broche GPIO : l'ancienne retombe avant d'appliquer la nouvelle.
+      if (prevMask) hidWrite(false, prevMask);
+      hidWrite(pttOn);
     }
     if ('mode' in patch) { pressHeld = false; setPtt(false, 'mode'); }
     saveSettings();
@@ -492,6 +600,13 @@ function registerIpc() {
 }
 
 // ---------------------------------------------------------------- Cycle de vie
+
+// Filet de sécurité : sur une erreur non rattrapée du processus principal, on
+// retombe le PTT (la broche GPIO d'une CM108 resterait sinon verrouillée).
+process.on('uncaughtException', (e) => {
+  console.error('Erreur non rattrapée :', e);
+  try { pttOn = false; clearTimeout(totTimer); clearTimeout(tailTimer); writeLine(false); } catch {}
+});
 
 if (!app.requestSingleInstanceLock()) {
   app.quit();

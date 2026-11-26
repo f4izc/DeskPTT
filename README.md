@@ -6,7 +6,7 @@
 [![Platform: Windows 10/11](https://img.shields.io/badge/Platform-Windows_10%2F11_x64-0078D6)](#download)
 [![macOS: planned](https://img.shields.io/badge/macOS-planned-lightgrey)](#download)
 
-*Works with any USB audio interface for radio that keys PTT through a COM port.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
+*Works with any USB audio interface for radio that keys PTT through a COM port or a CM108 GPIO pin.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
 
 ![DeskPTT, advanced view](site/img/advanced.png)
 
@@ -16,10 +16,10 @@
 >   it does not control the radio (frequency, mode, memories stay on the rig).
 >   That is all the vast majority of **VHF/UHF FM mobile and handheld transceivers** need:
 >   any rig with a mic/speaker or data jack works, whether or not it has a CAT port.
-> - 🔌 **Generic USB audio interface.** Any interface that appears in Windows as a USB sound card plus a
->   COM port whose RTS or DTR line keys the radio (USB sound chip of the CM108 type + USB-serial chip, for example).
->   PTT through the CM108's own GPIO pin is not supported yet; without PTT keying, switch DeskPTT to
->   **Radio VOX** mode and let the radio's VOX key the transmitter.
+> - 🔌 **Generic USB audio interface.** Any interface that appears in Windows as a USB sound card and keys
+>   the radio either through a **COM port** line (RTS or DTR, e.g. a CM108-type sound chip + a USB-serial chip)
+>   or through a **GPIO pin of the sound chip itself** (CM108/CM119, SSS1621/1623, AIOC — no COM port needed).
+>   Without PTT keying, switch DeskPTT to **Radio VOX** mode and let the radio's VOX key the transmitter.
 
 DeskPTT turns your Windows PC into a desk microphone and speaker for your VHF/UHF FM transceiver.
 Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
@@ -27,7 +27,8 @@ Plug in your interface, pick your audio devices, and you're on the air — no ex
 - **Receive**: route the radio audio to your speakers or headset, with volume control and a filter against USB whistle.
 - **Transmit**: use your PC microphone with noise reduction and adjustable level to the radio.
 - **PTT your way**: an on-screen button or a global hotkey (keyboard key or mouse side button) that works
-  even when another app has focus. PTT is keyed through the interface's COM port (RTS/DTR).
+  even when another app has focus. PTT is keyed through the interface's COM port (RTS/DTR) or the
+  sound chip's GPIO pin (CM108 type).
 - **Repeater-friendly**: a 1750 Hz tone call button, a time-out timer (TOT) and an adjustable PTT tail.
 - **Radio VOX mode**: for interfaces that cannot key the radio, the PTT button becomes **VOX / MUTE** and
   opens or mutes the audio sent to the radio; the radio's own VOX does the keying.
@@ -59,9 +60,11 @@ Windows names the interface from the PC's point of view: the interface's **"Micr
 
 1. **Receive**: *Radio audio* = `Microphone (USB PnP Sound Device)`; *Computer speaker or headset* = where you want to listen.
 2. **Transmit**: *Computer microphone* = your mic; *To the radio* = `Speakers (USB PnP Sound Device)`.
-3. **COM port**: the interface's serial port, and the line that keys it (RTS on most interfaces).
+3. **PTT port**: the interface's COM port and the line that keys it (RTS on most interfaces).
    Ports with a Silicon Labs CP210x chip, common on these interfaces, are marked with a ★.
    Close other software that uses it (VARA, etc.): a COM port can only be open in one application at a time.
+   Interface without a COM port? Pick its sound card in the same list (`CM108 GPIO — …`) and the GPIO pin
+   that keys it (**GPIO 3** on most CM108 interfaces).
 4. **Global hotkey**: *Assign…*, then press a key or a mouse side button (Esc cancels).
 5. **Level to radio** (dB): the interface output drives the radio's *microphone* input, so it needs strong
    attenuation (−26 dB by default). Adjust by ear or with a second receiver.
@@ -76,8 +79,13 @@ Windows names the interface from the PC's point of view: the interface's **"Micr
 | T-CALL | Hold to transmit a 1750 Hz tone (repeater access); follows the *Level to radio* setting |
 | Transmit control (About → Settings) | *PTT via the COM port* (default) or *Radio VOX*: DeskPTT then never opens the COM port; the **VOX / MUTE** button (and hotkey, following the *Mode*) opens or mutes the audio sent to the radio. Always starts muted. |
 
-PTT is released automatically when the TOT expires, when the app closes or crashes, when the COM port is
-unplugged, or when the PTT mode changes. RTS and DTR are lowered as soon as the port opens.
+PTT is released automatically when the TOT expires, when the app closes or crashes, when the COM port or
+CM108 sound card is unplugged, or when the PTT mode or port changes. RTS and DTR (or the GPIO pin) are
+lowered as soon as the port opens.
+
+> ⚠️ **CM108 GPIO**: unlike a COM port, the sound chip keeps its GPIO pin latched if DeskPTT is killed
+> abruptly (Task Manager, power loss of the PC) while transmitting. Restarting DeskPTT or unplugging the
+> interface releases it. Keep the radio's own time-out timer enabled as a last line of defence.
 
 Settings are stored in `%APPDATA%\DeskPTT\settings.json`. The interface is in English by default; French
 is available from the **i** (About) button.
@@ -138,6 +146,8 @@ DeskPTT stands on the shoulders of these free and open-source projects and resou
 | [Chromium](https://www.chromium.org/) (embedded in Electron) | Web Audio API, `getUserMedia`, `AudioContext.setSinkId` for audio routing | BSD-3-Clause and others |
 | [Node.js](https://nodejs.org/) (embedded in Electron) | JavaScript runtime of the main process | MIT |
 | [Node SerialPort](https://serialport.io/) — [source](https://github.com/serialport/node-serialport) | COM port access, RTS/DTR control for PTT | MIT |
+| [node-hid](https://github.com/node-hid/node-hid) | USB HID access, GPIO PTT on CM108-type sound cards | MIT or X11 |
+| [HIDAPI](https://github.com/libusb/hidapi) (inside node-hid) | Native HID library | BSD-3-Clause (one of its license options) |
 | [uiohook-napi](https://github.com/SnosMe/uiohook-napi) | Global keyboard / mouse hotkey | MIT |
 | [libuiohook](https://github.com/kwhat/libuiohook) (inside uiohook-napi) | Native system-wide input hook | LGPL-3.0-or-later |
 | Small helper packages (`debug`, `ms`, `node-gyp-build`, `node-addon-api`…) | Dependencies of the above | MIT |
@@ -154,8 +164,11 @@ DeskPTT stands on the shoulders of these free and open-source projects and resou
 **Hardware, standards and documentation**
 
 - Tested with a [Digirig](https://digirig.net/) Mobile interface (C-Media style USB audio codec, Silicon Labs
-  CP210x USB-to-UART bridge whose RTS line keys the radio) and an Icom ID-5200 VHF/UHF transceiver.
+  CP210x USB-to-UART bridge whose RTS line keys the radio), a Digirig Lite (C-Media CM119-type sound chip,
+  PTT on its GPIO 3) and an Icom ID-5200 VHF/UHF transceiver.
   DeskPTT is not specific to this hardware: any interface built the same way works.
+- CM108 GPIO output report format as used by [Direwolf](https://github.com/wb2osz/direwolf) and
+  [Hamlib](https://github.com/Hamlib/Hamlib) (C-Media CM108 datasheet: GPIO data, then GPIO direction).
 - 1750 Hz tone-burst repeater access, as commonly used on IARU Region 1 FM repeaters.
 - [MDN Web Docs](https://developer.mozilla.org/) — Web Audio API (`BiquadFilterNode`, `AnalyserNode`, `OscillatorNode`)
   and Media Capture references.

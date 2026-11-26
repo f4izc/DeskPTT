@@ -1,7 +1,7 @@
 # DeskPTT — Guide d'utilisation (français)
 
 *Votre poste FM, depuis votre bureau.* DeskPTT transforme votre PC Windows en micro et haut-parleur
-de bureau pour votre émetteur-récepteur FM VHF/UHF, via une interface audio USB pour radio (carte son USB + port COM pour le PTT).
+de bureau pour votre émetteur-récepteur FM VHF/UHF, via une interface audio USB pour radio (carte son USB, avec un port COM ou une broche GPIO de la puce son pour le PTT).
 
 > **En bref**
 > - 🖥️ **Fonctionne sous Windows 10 et 11** (64 bits). Une **version macOS est en projet**.
@@ -33,6 +33,9 @@ Windows nomme l'interface du point de vue de l'ordinateur : son « Microphone »
 3. **Port COM** : le port série de l'interface (les ports à puce Silicon Labs CP210x, courante sur ces interfaces, sont repérés par ★), le même
    que dans VARA par exemple. Fermez les autres logiciels qui l'utilisent : **un port COM ne peut être
    ouvert que par une seule application à la fois**.
+   Interface sans port COM (puce son CM108/CM119, SSS1621/1623, AIOC) ? Choisissez sa carte son dans la
+   même liste (`CM108 GPIO — …`), puis la broche qui commande le PTT dans *Ligne de commande* :
+   **GPIO 3** sur la plupart des interfaces CM108.
 4. **Raccourci** : *Assigner…* puis appuyez sur la touche ou le bouton de souris voulu (Échap annule).
    Il marche que la fenêtre DeskPTT ait le focus ou non.
 5. **Niveau vers le poste** (en dB) : la sortie de l'interface attaque l'entrée **micro** du poste, d'où une
@@ -89,8 +92,13 @@ Côté matériel, on peut aussi l'atténuer avec une ferrite sur le câble USB, 
 ## Sécurité PTT
 
 Le PTT retombe automatiquement quand : le TOT expire, l'application se ferme, l'interface plante,
-le port COM est débranché ou le mode PTT est changé. À l'ouverture du port, RTS et DTR sont
-remis à zéro, car Windows les lève par défaut.
+le port COM ou la carte son CM108 est débranché, ou le mode ou le port PTT est changé. À l'ouverture
+du port, RTS et DTR (ou la broche GPIO) sont remis à zéro, car Windows lève RTS et DTR par défaut.
+
+> ⚠️ **PTT par GPIO (CM108)** : contrairement à un port COM, la puce son garde sa broche GPIO dans son
+> dernier état si DeskPTT est arrêté brutalement (Gestionnaire des tâches, coupure du PC) pendant une
+> émission. Relancer DeskPTT ou débrancher l'interface la fait retomber. Gardez le TOT du poste activé
+> en dernier recours.
 
 ## Avertissement
 

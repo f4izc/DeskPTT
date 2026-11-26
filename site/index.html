@@ -68,7 +68,8 @@
         </div>
         <div class="pill-card">
           <h3>🔌 USB audio interfaces</h3>
-          <p>Any interface that shows up as a USB sound card plus a COM port with RTS or DTR keying.</p>
+          <p>Any interface that shows up as a USB sound card and keys the radio through a COM port (RTS or DTR)
+            or through the GPIO pin of a CM108-type sound chip.</p>
         </div>
       </div>
     </section>
@@ -109,8 +110,8 @@
           <li>
             <h3>Connect the interface</h3>
             <p>Plug the audio interface into a USB port and into your radio's mic/speaker or data jack. Windows shows a
-              USB sound card (often <em>USB PnP Sound Device</em>) and a COM port. If you use VARA, it is the
-              same port.</p>
+              USB sound card (often <em>USB PnP Sound Device</em>) and, on most interfaces, a COM port. If you use
+              VARA, it is the same port.</p>
           </li>
           <li>
             <h3>Install DeskPTT</h3>
@@ -131,10 +132,11 @@
             <p>DeskPTT pre-selects sensible defaults and never picks the interface for your headset.</p>
           </li>
           <li>
-            <h3>Choose the COM port</h3>
+            <h3>Choose the PTT port</h3>
             <p>In <em>PTT settings</em>, select the interface's COM port and choose
               the control line that keys your interface, usually <strong>RTS</strong>. The chip at the top turns green:
-              <em>COM port: COMx (RTS)</em>.</p>
+              <em>COM port: COMx (RTS)</em>. No COM port? Select the sound card (<em>CM108 GPIO — …</em>) and its pin,
+              usually <strong>GPIO 3</strong>.</p>
           </li>
           <li>
             <h3>Set a hotkey (optional)</h3>
@@ -166,9 +168,10 @@
           <p>Any transceiver you can feed audio to and key through the interface: most VHF/UHF FM mobiles and
             handhelds. DeskPTT was developed with an Icom ID-5200. It does not use CAT, so the radio model does not
             matter as long as the cable is right.</p>
-          <p>Your audio interface must also be able to key the PTT: DeskPTT drives it through a COM port line
-            (RTS or DTR), as on interfaces that pair a CM108-type USB sound chip with a USB-serial chip.
-            PTT through the CM108 chip's own GPIO pin is not supported yet. If your interface cannot key the radio,
+          <p>Your audio interface must also be able to key the PTT. DeskPTT drives either a COM port line
+            (RTS or DTR), as on interfaces that pair a CM108-type USB sound chip with a USB-serial chip, or a GPIO
+            pin of the sound chip itself (CM108/CM119, SSS1621/1623, AIOC), for interfaces without a COM port.
+            If your interface cannot key the radio,
             switch DeskPTT to <strong>Radio VOX</strong> mode (About → Settings → Transmit control): the PTT button
             becomes <strong>VOX / MUTE</strong> and opens or mutes the audio sent to the radio, whose VOX does the keying.</p>
         </details>

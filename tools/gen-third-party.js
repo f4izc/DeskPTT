@@ -10,7 +10,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const root = path.join(__dirname, '..');
-const LICENSE_FILES = /^(licen[cs]e|copying|notice)(\.(md|txt|markdown))?$/i;
+const LICENSE_FILES = /^(licen[cs]e|copying|notice)(-[\w]+)?(\.(md|txt|markdown))?$/i;
 
 // Paths of all production packages, as installed.
 const out = execSync('npm ls --omit=dev --all --parseable', { cwd: root, encoding: 'utf8' });
@@ -60,6 +60,13 @@ if (electron) {
 }
 entries.sort((a, b) => a.name.localeCompare(b.name));
 
+// node-hid compile HIDAPI dans son module natif ; DeskPTT l'utilise sous sa licence BSD.
+const hidapiDir = path.join(root, 'node_modules', 'node-hid', 'hidapi');
+const hidapiBsd = path.join(hidapiDir, 'LICENSE-bsd.txt');
+const hidapi = fs.existsSync(hidapiBsd)
+  ? `\n## HIDAPI (inside node-hid) — BSD-3-Clause\n\nnode-hid statically includes HIDAPI, which can be used under the GPL-3.0, a BSD-style license or\nits original license, at the user's discretion. DeskPTT uses it under the BSD-style license below.\n\n- Source: https://github.com/libusb/hidapi\n\n\`\`\`text\n${fs.readFileSync(hidapiBsd, 'utf8').trim()}\n\`\`\`\n`
+  : '';
+
 let md = `# Third-party notices
 
 DeskPTT is licensed under the Apache License 2.0 (see LICENSE). The DeskPTT
@@ -76,7 +83,7 @@ version 3 or (at your option) any later version.
 - License texts: https://www.gnu.org/licenses/lgpl-3.0.html and https://www.gnu.org/licenses/gpl-3.0.html
 - You may replace \`resources\\app.asar.unpacked\\node_modules\\uiohook-napi\\prebuilds\\win32-x64\\uiohook-napi.node\`
   in the installation folder with your own build of the library.
-
+${hidapi}
 ## Summary
 
 | Package | Version | License | Source |

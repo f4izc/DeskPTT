@@ -1,8 +1,8 @@
 {
   "name": "deskptt",
   "productName": "DeskPTT",
-  "version": "1.1.2",
-  "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a USB audio interface (USB sound card + COM port PTT).",
+  "version": "1.2.0",
+  "description": "DeskPTT — Your FM rig, from your desk. Desk microphone, speaker and PTT for VHF/UHF FM transceivers through a USB audio interface (USB sound card + COM port or CM108 GPIO PTT).",
   "author": "Stephane Tauziede (F4IZC)",
   "license": "Apache-2.0",
   "homepage": "https://github.com/f4izc/DeskPTT",
@@ -30,6 +30,7 @@
     "dist": "electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {
+    "node-hid": "^3.4.0",
     "serialport": "^12.0.0",
     "uiohook-napi": "^1.5.4"
   },
@@ -47,7 +48,11 @@
       "preload.js",
       "renderer/**/*",
       "build/icon.png",
-      "package.json"
+      "package.json",
+      "!node_modules/node-hid/prebuilds/HID{,_hidraw}-{darwin,linux}-*/**",
+      "!node_modules/node-hid/prebuilds/HID-win32-{arm64,ia32}/**",
+      "!node_modules/node-hid/src/**",
+      "!node_modules/node-hid/hidapi/**"
     ],
     "extraFiles": [
       "LICENSE",
@@ -69,6 +74,7 @@
   "allowScripts": {
     "electron@33.4.11": true,
     "uiohook-napi@1.5.5": true,
-    "@serialport/bindings-cpp@12.0.1": true
+    "@serialport/bindings-cpp@12.0.1": true,
+    "node-hid@3.4.0": true
   }
 }

@@ -70,8 +70,8 @@
         </div>
         <div class="pill-card">
           <h3>🔌 Interfaces audio USB</h3>
-          <p>Toute interface vue comme une carte son USB avec un port COM dont la ligne RTS ou DTR commande le PTT.
-            Sinon, le VOX du poste prend le relais.</p>
+          <p>Toute interface vue comme une carte son USB qui commande le PTT par un port COM (ligne RTS ou DTR)
+            ou par la broche GPIO d'une puce son de type CM108. Sinon, le VOX du poste prend le relais.</p>
         </div>
       </div>
     </section>
@@ -113,8 +113,8 @@
           <li>
             <h3>Branchez l'interface</h3>
             <p>Reliez l'interface audio à un port USB et à la prise micro/haut-parleur ou data de votre poste. Windows
-              affiche une carte son USB (souvent <em>USB PnP Sound Device</em>) et un port COM. Si vous utilisez VARA,
-              c'est le même port.</p>
+              affiche une carte son USB (souvent <em>USB PnP Sound Device</em>) et, sur la plupart des interfaces, un
+              port COM. Si vous utilisez VARA, c'est le même port.</p>
           </li>
           <li>
             <h3>Installez DeskPTT</h3>
@@ -140,10 +140,11 @@
             <p>DeskPTT propose des choix par défaut cohérents et ne prend jamais l'interface pour votre casque.</p>
           </li>
           <li>
-            <h3>Choisissez le port COM</h3>
+            <h3>Choisissez le port PTT</h3>
             <p>Dans <em>Réglages PTT</em>, sélectionnez le port COM de l'interface et la ligne qui commande le PTT,
               en général <strong>RTS</strong>. La pastille en haut passe au vert :
-              <em>Port COM : COMx (RTS)</em>. Pas de PTT sur votre interface ? Passez en mode
+              <em>Port COM : COMx (RTS)</em>. Pas de port COM ? Choisissez la carte son (<em>CM108 GPIO — …</em>) et
+              sa broche, en général <strong>GPIO 3</strong>. Pas de PTT du tout sur votre interface ? Passez en mode
               <strong>VOX du poste</strong> (voir la FAQ).</p>
           </li>
           <li>
@@ -176,9 +177,10 @@
           <p>Tout émetteur-récepteur auquel l'interface peut envoyer du son et commander l'émission : la plupart des
             mobiles et portatifs FM VHF/UHF. DeskPTT a été développé avec un Icom ID-5200. Il n'utilise pas le CAT :
             le modèle de poste importe peu, pourvu que le câble soit le bon.</p>
-          <p>L'interface audio doit aussi pouvoir commander le PTT : DeskPTT le fait par une ligne d'un port COM
-            (RTS ou DTR), comme sur les interfaces qui associent une puce son USB de type CM108 à une puce USB-série.
-            Le PTT par la broche GPIO de la puce CM108 n'est pas encore pris en charge. Si votre interface ne peut pas
+          <p>L'interface audio doit aussi pouvoir commander le PTT. DeskPTT le fait soit par une ligne d'un port COM
+            (RTS ou DTR), comme sur les interfaces qui associent une puce son USB de type CM108 à une puce USB-série,
+            soit par une broche GPIO de la puce son elle-même (CM108/CM119, SSS1621/1623, AIOC), pour les interfaces
+            sans port COM. Si votre interface ne peut pas
             passer le poste en émission, passez DeskPTT en mode <strong>VOX du poste</strong> (À propos → Réglages →
             Commande d'émission) : le bouton PTT devient <strong>VOX / MUTE</strong> et ouvre ou coupe le son envoyé
             au poste, dont le VOX déclenche l'émission.</p>

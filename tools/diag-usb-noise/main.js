@@ -6,7 +6,8 @@
 // Usage (from the repository root):
 //   node_modules\electron\dist\electron.exe tools\diag-usb-noise
 //   set DIAG_FILTER=1 first to measure through DeskPTT's RX filters.
-//   set DIAG_DEVICE=<regex> to measure another input (e.g. "realtek" for the PC microphone).
+//   set DIAG_DEVICE=<regex> to measure another input (e.g. "realtek" for the PC microphone),
+//   DIAG_SECONDS=<n> to change the duration, DIAG_MINHZ=<hz> to ignore peaks below that frequency.
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
@@ -22,7 +23,9 @@ app.whenReady().then(() => {
   const w = new BrowserWindow({ show: false, webPreferences: { nodeIntegration: true, contextIsolation: false } });
   const html = path.join(__dirname, 'index.html');
   const device = JSON.stringify(process.env.DIAG_DEVICE || '');
-  fs.writeFileSync(html, `<script>const FILTER = ${process.env.DIAG_FILTER ? 'true' : 'false'}; const DEVICE = ${device}; (${renderer.toString()})()</script>`);
+  const seconds = Number(process.env.DIAG_SECONDS) || 20;
+  const minHz = Number(process.env.DIAG_MINHZ) || 0;
+  fs.writeFileSync(html, `<script>const FILTER = ${process.env.DIAG_FILTER ? 'true' : 'false'}; const DEVICE = ${device}; const SECONDS = ${seconds}; const MIN_HZ = ${minHz}; (${renderer.toString()})()</script>`);
   w.loadFile(html);
 });
 
@@ -56,11 +59,12 @@ function renderer() {
         an.getFloatFrequencyData(freq); an.getFloatTimeDomainData(time);
         let rms = 0; for (const v of time) rms += v * v; rms = Math.sqrt(rms / time.length);
         const peaks = [];
-        for (let i = 3; i < freq.length - 1; i++) if (freq[i] > freq[i - 1] && freq[i] >= freq[i + 1]) peaks.push([freq[i], i]);
+        const first = Math.max(3, Math.ceil(MIN_HZ * an.fftSize / ctx.sampleRate));
+        for (let i = first; i < freq.length - 1; i++) if (freq[i] > freq[i - 1] && freq[i] >= freq[i + 1]) peaks.push([freq[i], i]);
         peaks.sort((a, b) => b[0] - a[0]);
         const t = ((performance.now() - t0) / 1000).toFixed(1);
         log(`${t}s  RMS ${(20 * Math.log10(rms || 1e-9)).toFixed(1)} dBFS  peaks: ` + peaks.slice(0, 3).map(([db, i]) => `${hz(i)} Hz ${db.toFixed(0)} dB`).join(' | '));
-        if (performance.now() - t0 > 20000) { clearInterval(iv); ipcRenderer.send('done'); }
+        if (performance.now() - t0 > SECONDS * 1000) { clearInterval(iv); ipcRenderer.send('done'); }
       }, 500);
     } catch (e) { log('Error: ' + e.message); ipcRenderer.send('done'); }
   })();

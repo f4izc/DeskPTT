@@ -438,6 +438,22 @@ function bindPttButton() {
 
 // ---------------------------------------------------------------- Port COM
 
+const isHidPath = (p) => typeof p === 'string' && p.startsWith('hid:');
+
+// La liste « Ligne de commande » ne propose que les lignes du type de port choisi :
+// RTS/DTR pour un port COM, GPIO 1–4 pour une carte son CM108.
+async function syncLineOptions() {
+  const gpio = isHidPath(settings.serialPath);
+  const sel = $('pttLine');
+  for (const o of sel.options) o.hidden = o.disabled = gpio !== o.value.startsWith('gpio');
+  if (gpio !== settings.pttLine.startsWith('gpio')) {
+    settings.pttLine = gpio ? 'gpio3' : 'rts';
+    await api.saveSettings({ pttLine: settings.pttLine });
+    renderSummary();
+  }
+  sel.value = settings.pttLine;
+}
+
 async function refreshPorts() {
   const ports = await api.listPorts();
   const sel = $('serialPath');
@@ -462,9 +478,11 @@ async function refreshPorts() {
     }
   } else {
     // Port mémorisé absent (interface débranchée ?) : on le garde en mémoire.
-    sel.append(new Option(t('port.absent', { port: settings.serialPath }), settings.serialPath));
+    const name = isHidPath(settings.serialPath) ? 'CM108' : settings.serialPath;
+    sel.append(new Option(t('port.absent', { port: name }), settings.serialPath));
     sel.value = settings.serialPath;
   }
+  await syncLineOptions();
 }
 
 let lastSerial = { open: false, path: null, error: null };
@@ -479,7 +497,8 @@ function renderSerial(s) {
     return banner(tMsg(s.error));
   }
   if (s.open) {
-    chip.textContent = t('chip.port', { port: s.path, line: settings.pttLine.toUpperCase() });
+    const line = settings.pttLine.toUpperCase();
+    chip.textContent = isHidPath(s.path) ? t('chip.cm108', { line }) : t('chip.port', { port: s.path, line });
     chip.className = 'chip ok';
   } else {
     chip.textContent = t('chip.portOff');
@@ -617,9 +636,12 @@ function bindSettings(hookOk) {
   number('totSeconds', 0, 3600);
   number('tailMs', 0, 1000);
 
-  $('serialPath').addEventListener('change', (e) => {
+  $('serialPath').addEventListener('change', async (e) => {
+    // Changement de port : on coupe d'abord l'émission, puis on adapte la ligne.
+    api.pttOff();
     settings.serialPath = e.target.value || null;
-    api.openPort(settings.serialPath);
+    await syncLineOptions();
+    await api.openPort(settings.serialPath);
   });
   $('refreshPorts').addEventListener('click', refreshPorts);
 

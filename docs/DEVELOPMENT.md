@@ -6,6 +6,7 @@
 main.js            Electron main process
                    - settings (JSON in %APPDATA%\DeskPTT, migration from the old "PC Radio" name)
                    - COM port (serialport): PTT on RTS or DTR, lowered on open/close/crash
+                   - CM108 GPIO (node-hid): PTT on GPIO 1–4 of a CM108-type sound card, path "hid:<path>"
                    - PTT state machine: hold / toggle, T-CALL, TOT timer, PTT tail
                    - global hotkey (uiohook-napi) + keys forwarded by the window (see pitfalls)
                    - window sizing: fit the window height to the content (no scrollbar)
@@ -37,6 +38,13 @@ tools/
 All presses go through `pttPress/pttRelease` (idempotent) or `tcallPress/tcallRelease` in `main.js`.
 `setPtt(on)` raises the line immediately; on release the audio gate closes at once and the line drops
 after `tailMs`. Any crash, reload, window close or COM port loss forces PTT off.
+
+**CM108 GPIO**: `listPorts()` appends the HID devices of known sound chips (C-Media VID `0d8c`, SSS `0c76`,
+AIOC `1209:7388`; other USB codecs such as the IC-7300's are left out) with a `hid:` path. `writeLine()`
+then writes the output report `[0x00 report id, 0x00, data, direction, 0x00]`, bit = pin − 1 (same order as
+Direwolf/Hamlib; verified on a Digirig Lite, GPIO 3). The pin is written low on open, close, port or line
+change, renderer crash/reload and `uncaughtException`; device loss is detected by the HID read loop
+(`error` event). Residual risk: if the main process is killed, the chip keeps the pin latched.
 
 ## Pitfalls already solved (keep these in mind)
 
@@ -71,11 +79,16 @@ after `tailMs`. Any crash, reload, window close or COM port loss forces PTT off.
 ## Testing without keying the radio
 
 - Set the COM port to *None* in the app (or `serialPath: null` in settings.json) — audio still flows, PTT
-  only gates the audio.
+  only gates the audio. This also applies to CM108 sound cards: selecting one writes its pin low, but
+  never press PTT in an automated test while it is selected.
 - `--remote-debugging-port=9333` lets you drive the UI through the Chrome DevTools Protocol
   (`Runtime.evaluate`, `Page.captureScreenshot`).
 - `tools/diag-usb-noise`: `node_modules\electron\dist\electron.exe tools\diag-usb-noise` logs, every
   0.5 s for 20 s, the RMS level and the three strongest tones of the interface input (`result.txt`).
+  Environment: `DIAG_DEVICE=<regex>` for another input (e.g. `realtek`), `DIAG_SECONDS`, `DIAG_MINHZ`
+  (ignore peaks below), `DIAG_FILTER=1` (through the RX filters).
+- A TX whistle that ignores the *Level to radio* slider is added after DeskPTT (driver, sound card, ground):
+  a constant whistle on TX was once traced to the PC headset's mic driver (fixed by its vendor software).
 
 ## Releasing
 

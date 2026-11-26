@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0 — unreleased
+
+- **PTT through the GPIO pin of CM108-type sound cards** (CM108/CM119, SSS1621/1623, AIOC), for
+  interfaces without a COM port: pick the sound card in *PTT port* (`CM108 GPIO — …`), then the pin in
+  *Control line* (GPIO 1–4, **GPIO 3** by default). Tested with a Digirig Lite. The pin is released on
+  open, close, port change, crash/reload and when the card is unplugged.
+- The *Control line* list only shows the lines of the selected port type (RTS/DTR or GPIO).
+- Changing the PTT port now drops PTT first.
+- Diagnostic tool: `DIAG_SECONDS` and `DIAG_MINHZ` options.
+
 ## 1.1.2 — 2026-11-26
 
 - About window: author shown as "Steph F4IZC / N4IZC" (README and website credits updated too).
