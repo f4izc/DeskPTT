@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 — unreleased
+## 1.2.0 — 2026-11-26
 
 - **PTT through the GPIO pin of CM108-type sound cards** (CM108/CM119, SSS1621/1623, AIOC), for
   interfaces without a COM port: pick the sound card in *PTT port* (`CM108 GPIO — …`), then the pin in
