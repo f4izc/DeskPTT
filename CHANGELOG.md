@@ -8,6 +8,8 @@
   open, close, port change, crash/reload and when the card is unplugged.
 - The *Control line* list only shows the lines of the selected port type (RTS/DTR or GPIO).
 - Changing the PTT port now drops PTT first.
+- *Mute listening while transmitting* now closes the interface input entirely during TX (no USB audio
+  stream in from the interface while the radio transmits); listening comes back with a short fade-in.
 - Diagnostic tool: `DIAG_SECONDS` and `DIAG_MINHZ` options.
 
 ## 1.1.2 — 2026-11-26

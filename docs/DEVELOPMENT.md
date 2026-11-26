@@ -25,7 +25,9 @@ tools/
 ### Audio graph (renderer/app.js)
 
 - **RX**: `getUserMedia(interface input)` → notch 1/2/3/4 kHz (Q 8) → low-pass 3.4 kHz → volume →
-  mute (closed during TX, reopened after `tailMs + 400 ms`) → `AudioContext({ sinkId: headset })`.
+  mute → `AudioContext({ sinkId: headset })`. With *Mute listening while transmitting* on, the whole RX
+  chain (capture included) is closed during TX and reopened with a short fade-in after `tailMs + 400 ms`
+  (`rxGen` discards a `startRx()` overtaken by a newer one); with it off, the chain stays open.
   The notches/low-pass switch to all-pass / 20 kHz when the USB whistle filter is off.
 - **TX**: `getUserMedia(PC mic)` → mic gain (0 during T-CALL) ┐
   `OscillatorNode 1750 Hz` → tone gain (0.35 during T-CALL) ┴→ level (dB) → PTT gate → `AudioContext({ sinkId: interface })`.

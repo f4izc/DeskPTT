@@ -119,14 +119,29 @@ function teardown(chain) {
   for (const k of Object.keys(chain)) chain[k] = null;
 }
 
-async function startRx() {
+// Avec « Couper l'écoute pendant l'émission », la capture de l'entrée de
+// l'interface est fermée pendant l'émission (et pas seulement rendue muette) :
+// la puce son USB n'a alors plus de flux entrant actif pendant que le poste émet.
+let rxGen = 0;          // invalide un startRx() en cours si un autre l'a remplacé
+let rxResumeTimer = null;
+const rxPausedForTx = () => pttOn && settings.muteRxDuringTx;
+
+async function startRx(fadeIn = false) {
+  const gen = ++rxGen;
   teardown(rx);
   const inId = settings.rigIn && settings.rigIn.id;
   const outId = settings.headsetOut && settings.headsetOut.id;
-  if (!inId || !outId) return;
+  if (!inId || !outId || rxPausedForTx()) return;
   try {
-    rx.stream = await openMic(inId, false);
-    rx.ctx = await makeContext(outId);
+    const stream = await openMic(inId, false);
+    if (gen !== rxGen) return stream.getTracks().forEach((tr) => tr.stop());
+    rx.stream = stream;
+    const ctx = await makeContext(outId);
+    if (gen !== rxGen) {
+      stream.getTracks().forEach((tr) => tr.stop());
+      return ctx.close().catch(() => {});
+    }
+    rx.ctx = ctx;
     const src = rx.ctx.createMediaStreamSource(rx.stream);
     rx.analyser = rx.ctx.createAnalyser();
     rx.analyser.fftSize = 1024;
@@ -156,7 +171,13 @@ async function startRx() {
     wireRxFilter();
     node.connect(rx.analyser);
     node.connect(rx.gain).connect(rx.mute).connect(rx.ctx.destination);
+    if (fadeIn) {
+      // Réouverture après l'émission : montée douce, sans le clic d'ouverture.
+      rx.mute.gain.setValueAtTime(0, rx.ctx.currentTime);
+      rx.mute.gain.setTargetAtTime(1, rx.ctx.currentTime + 0.05, 0.03);
+    }
   } catch (e) {
+    if (gen !== rxGen) return;
     teardown(rx);
     banner(t('err.rxOpen', { msg: e.message }));
   }
@@ -256,7 +277,20 @@ const RX_RETURN_MARGIN_MS = 400;
 
 function applyPttAudio() {
   ramp(tx.gate, tx.ctx, pttOn ? 1 : 0);
-  if (!rx.mute || !rx.ctx) return;
+  clearTimeout(rxResumeTimer);
+  if (rxPausedForTx()) {
+    rxGen++;
+    teardown(rx);
+    return;
+  }
+  if (!rx.ctx) {
+    // Capture fermée pendant l'émission : rouverte après la traîne + la marge
+    // (tout de suite si l'option vient d'être décochée en cours d'émission).
+    const delay = pttOn ? 0 : Math.max(0, settings.tailMs) + RX_RETURN_MARGIN_MS;
+    rxResumeTimer = setTimeout(() => startRx(true), delay);
+    return;
+  }
+  if (!rx.mute) return;
   if (!settings.muteRxDuringTx) return ramp(rx.mute, rx.ctx, 1);
   if (pttOn) return ramp(rx.mute, rx.ctx, 0);
   const delay = (Math.max(0, settings.tailMs) + RX_RETURN_MARGIN_MS) / 1000;
