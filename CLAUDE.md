@@ -28,5 +28,7 @@ npm run dist      # build dist\DeskPTT-Setup-<version>.exe
 
 ## Testing
 
-Never key the real radio during automated tests: set `serialPath` to null first, and restore the user's
+Never key the real radio during automated tests: in the test profile set `serialPath` to a fictitious port
+(`COM99`) or to null **with `portChosen: true`** (a fresh profile auto-selects a lone CP210x port, possibly
+another rig's CAT port), never select a CM108 sound card before pressing PTT, and restore the user's
 settings afterwards. Drive the UI with `--remote-debugging-port` + CDP; inject keys with scan codes.

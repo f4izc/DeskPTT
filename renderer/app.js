@@ -497,8 +497,11 @@ async function refreshPorts() {
 
   if (settings.serialPath && ports.some((p) => p.path === settings.serialPath)) {
     sel.value = settings.serialPath;
+  } else if (!settings.serialPath && settings.portChosen) {
+    sel.value = ''; // « Aucun » choisi par l'utilisateur : on le respecte.
   } else if (!settings.serialPath) {
-    // Sélection automatique seulement s'il n'y a qu'un seul candidat.
+    // Sélection automatique seulement avant tout choix de l'utilisateur (« Aucun »
+    // compris) et s'il n'y a qu'un seul candidat.
     const candidates = ports.filter((p) => p.likelyInterface);
     const guess = candidates.length === 1 ? candidates[0] : null;
     sel.value = '';
@@ -674,6 +677,8 @@ function bindSettings(hookOk) {
     // Changement de port : on coupe d'abord l'émission, puis on adapte la ligne.
     api.pttOff();
     settings.serialPath = e.target.value || null;
+    settings.portChosen = true;
+    await api.saveSettings({ portChosen: true });
     await syncLineOptions();
     await api.openPort(settings.serialPath);
   });

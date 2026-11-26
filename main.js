@@ -42,6 +42,9 @@ const DEFAULTS = {
   rigIn: null,
   rigOut: null,
   serialPath: null,  // 'COM11'… ou 'hid:<chemin>' pour une carte son type CM108
+  // true dès que l'utilisateur a choisi un port, « Aucun » compris : la sélection
+  // automatique d'un port COM ne se fait qu'avant ce premier choix.
+  portChosen: false,
   pttLine: 'rts',    // 'rts' | 'dtr' (port COM) ; 'gpio1'…'gpio4' (CM108)
   mode: 'hold',      // 'hold' | 'toggle'
   totSeconds: 180,   // 0 = désactivé
@@ -87,6 +90,9 @@ function loadSettings() {
       saved.txGainDb = Math.max(-50, Math.min(6, Math.round(40 * Math.log10(saved.txVolume)) / 2));
     }
     delete saved.txVolume;
+    // Réglages d'avant 1.2.0 : on ne sait pas si « Aucun » était un choix, donc
+    // on ne sélectionne plus de port automatiquement (pas d'émission sur un port inattendu).
+    if (saved.portChosen === undefined) saved.portChosen = true;
     settings = { ...DEFAULTS, ...saved };
   } catch {
     settings = { ...DEFAULTS };

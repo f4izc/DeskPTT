@@ -80,8 +80,9 @@ change, renderer crash/reload and `uncaughtException`; device loss is detected b
 
 ## Testing without keying the radio
 
-- Set the COM port to *None* in the app (or `serialPath: null` in settings.json) — audio still flows, PTT
-  only gates the audio. This also applies to CM108 sound cards: selecting one writes its pin low, but
+- Set the COM port to *None* in the app, or in settings.json `serialPath: null` **with `portChosen: true`**
+  (or a fictitious port such as `COM99`) — audio still flows, PTT only gates the audio. A fresh profile
+  without `portChosen` auto-selects the only CP210x port it finds, which may be another radio's CAT port. This also applies to CM108 sound cards: selecting one writes its pin low, but
   never press PTT in an automated test while it is selected.
 - `--remote-debugging-port=9333` lets you drive the UI through the Chrome DevTools Protocol
   (`Runtime.evaluate`, `Page.captureScreenshot`).

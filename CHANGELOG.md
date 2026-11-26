@@ -8,6 +8,9 @@
   open, close, port change, crash/reload and when the card is unplugged.
 - The *Control line* list only shows the lines of the selected port type (RTS/DTR or GPIO).
 - Changing the PTT port now drops PTT first.
+- **Safety**: choosing *None* as PTT port is now remembered. Before, a single CP210x COM port (possibly
+  another radio's CAT port) was selected again automatically at the next start. Automatic selection now
+  only happens on a fresh install, before any choice.
 - *Mute listening while transmitting* now closes the interface input entirely during TX (no USB audio
   stream in from the interface while the radio transmits); listening comes back with a short fade-in.
 - Diagnostic tool: `DIAG_SECONDS` and `DIAG_MINHZ` options.
