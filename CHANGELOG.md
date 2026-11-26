@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Voice enhancer** on transmit (off by default): 90 Hz high-pass, soft expander (background noise
+  between words about 10 dB lower), bass boost (+5 dB shelf below 250 Hz) and light 3:1 compression.
+  Peaks stay at about the same level, so the *Level to radio* setting does not need changing; quiet
+  syllables come out louder.
 - **Receive noise gate** (off by default): cuts the interface's background hiss when the radio receives
   nothing. The threshold (−60…−20 dB) shows as a white mark on the receive meter.
 - Fix: restarting the transmit audio twice in a row (e.g. device change) could leave an orphaned copy of

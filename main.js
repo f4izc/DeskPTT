@@ -56,6 +56,7 @@ const DEFAULTS = {
   rxNotch: true,     // coupe-bande 1/2/3/4 kHz contre le bruit de trame USB
   rxGate: false,     // porte de bruit : coupe le souffle quand le poste ne reçoit rien
   rxGateDb: -45,     // seuil d'ouverture, dBFS crête (−60…−20)
+  txEnhance: false,  // amélioration de la voix : compression légère, bruit atténué, graves
   view: 'advanced',  // 'advanced' | 'compact'
   lang: 'en',        // 'en' | 'fr'
   noiseSuppression: false,

@@ -30,6 +30,7 @@ const STRINGS = {
     'tx.level': 'Level to radio',
     'tx.micLevel': 'Microphone level',
     'tx.ns': 'Microphone noise reduction',
+    'tx.enhance': 'Voice enhancer (light compression, background noise reduced, bass boost)',
 
     'ptt.rx': 'Receive',
     'ptt.tx': 'TRANSMIT {t}',
@@ -150,6 +151,7 @@ const STRINGS = {
     'tx.level': 'Niveau vers le poste',
     'tx.micLevel': 'Niveau du micro',
     'tx.ns': 'Réduction de bruit du micro',
+    'tx.enhance': 'Amélioration de la voix (compression légère, bruit de fond réduit, graves renforcés)',
 
     'ptt.rx': 'Réception',
     'ptt.tx': 'ÉMISSION {t}',

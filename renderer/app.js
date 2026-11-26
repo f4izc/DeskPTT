@@ -172,7 +172,7 @@ async function startRx(fadeIn = false) {
     // Le vumètre est pris avant la porte de bruit : on y voit le souffle, ce
     // qui sert à placer le seuil (repère sur le vumètre).
     node.connect(rx.analyser);
-    rx.noiseGate = await makeRxGate(rx.ctx);
+    rx.noiseGate = await makeGate(rx.ctx);
     if (gen !== rxGen) return; // teardown() du startRx() suivant a déjà fermé ce contexte
     if (rx.noiseGate) node = node.connect(rx.noiseGate);
     wireRxGate();
@@ -223,7 +223,13 @@ async function startTx() {
     // Le micro passe par tx.mic (coupé pendant le T-CALL pour une tonalité propre).
     tx.mic = tx.ctx.createGain();
     tx.mic.gain.value = toneOn ? 0 : 1;
-    src.connect(tx.mic).connect(tx.gain);
+    src.connect(tx.mic);
+    // Amélioration de la voix (voix seulement, pas la tonalité 1750 Hz).
+    const enh = await makeEnhancer(tx.ctx);
+    if (gen !== txGen) return; // teardown() du startTx() suivant a déjà fermé ce contexte
+    tx.enh = enh;
+    tx.mic.connect(enh.input);
+    enh.output.connect(tx.gain);
     // Tonalité 1750 Hz, toujours active mais muette hors T-CALL. Elle passe par
     // le même réglage de niveau que la voix, puis par la porte PTT.
     tx.osc = tx.ctx.createOscillator();
@@ -293,7 +299,7 @@ function wireRxFilter() {
 // Porte de bruit de la réception (renderer/rx-gate-worklet.js) : coupe le
 // souffle de l'interface quand le poste ne reçoit rien. Si le module ne se
 // charge pas, l'écoute fonctionne sans porte.
-async function makeRxGate(ctx) {
+async function makeGate(ctx) {
   try {
     await ctx.audioWorklet.addModule('rx-gate-worklet.js');
     return new AudioWorkletNode(ctx, 'rx-gate');
@@ -301,6 +307,57 @@ async function makeRxGate(ctx) {
     console.error('rx gate', e);
     return null;
   }
+}
+
+// Amélioration de la voix à l'émission : passe-haut 90 Hz (ronflement, chocs) →
+// expandeur doux (bruit de fond entre les mots atténué de 18 dB, pas coupé ;
+// le gain de rattrapage du compresseur, ~+8 dB à bas niveau, en reprend une partie) →
+// graves renforcés (plateau +5 dB sous 250 Hz) → compresseur léger (3:1).
+// Branche « wet » et branche directe « dry » en parallèle : on bascule par un
+// fondu de quelques ms, sans reconstruire la chaîne ni couper le son.
+const ENH = { hpHz: 90, expThresholdDb: -50, expFloorDb: -18, shelfHz: 250, shelfDb: 5, trimDb: 0 };
+
+async function makeEnhancer(ctx) {
+  const input = ctx.createGain();
+  const output = ctx.createGain();
+  const dry = ctx.createGain();
+  const wet = ctx.createGain();
+  dry.gain.value = settings.txEnhance ? 0 : 1;
+  wet.gain.value = settings.txEnhance ? 1 : 0;
+  input.connect(dry).connect(output);
+
+  const hp = ctx.createBiquadFilter();
+  hp.type = 'highpass';
+  hp.frequency.value = ENH.hpHz;
+  hp.Q.value = -3.01; // Q en dB pour ce type : Butterworth (0,707)
+  let node = input.connect(hp);
+  const exp = await makeGate(ctx);
+  if (exp) {
+    exp.parameters.get('enabled').value = 1;
+    exp.parameters.get('threshold').value = ENH.expThresholdDb;
+    exp.parameters.get('floor').value = ENH.expFloorDb;
+    node = node.connect(exp);
+  }
+  const shelf = ctx.createBiquadFilter();
+  shelf.type = 'lowshelf';
+  shelf.frequency.value = ENH.shelfHz;
+  shelf.gain.value = ENH.shelfDb;
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -26;
+  comp.knee.value = 10;
+  comp.ratio.value = 3;
+  comp.attack.value = 0.005;
+  comp.release.value = 0.15;
+  const trim = ctx.createGain();
+  trim.gain.value = dbToGain(ENH.trimDb);
+  node.connect(shelf).connect(comp).connect(trim).connect(wet).connect(output);
+  return { input, output, dry, wet, comp, trim };
+}
+
+function wireEnhancer() {
+  if (!tx.enh) return;
+  ramp(tx.enh.wet, tx.ctx, settings.txEnhance ? 1 : 0);
+  ramp(tx.enh.dry, tx.ctx, settings.txEnhance ? 0 : 1);
 }
 
 function wireRxGate() {
@@ -698,6 +755,7 @@ function bindSettings(hookOk) {
   check('rxNotch', wireRxFilter);
   check('rxGate', wireRxGate);
   check('noiseSuppression', startTx);
+  check('txEnhance', wireEnhancer);
 
   // Seuil de la porte de bruit, en dBFS crête (même échelle que le vumètre).
   const gateIn = $('rxGateDb');

@@ -29,11 +29,17 @@ tools/
   stays visible to set the threshold). The gate is an AudioWorklet (`renderer/rx-gate-worklet.js`, audio
   thread, so it keeps working with the window minimized): peak detector, opens in ~3 ms above the
   threshold, closes 6 dB below it after a 300 ms hold with an 80 ms release. If the module fails to
-  load, RX works without it. With *Mute listening while transmitting* on, the whole RX
+  load, RX works without it.
+- **Voice enhancer** (TX, `makeEnhancer`, setting `txEnhance`): dry and wet branches in parallel,
+  switched by a few-ms crossfade. Wet = high-pass 90 Hz → the same gate worklet used as a soft expander
+  (threshold −50 dBFS, `floor` −18 dB) → low-shelf +5 dB @ 250 Hz → `DynamicsCompressor` (−26 dB, 3:1,
+  knee 10). Chromium adds automatic makeup gain (about +8.5 dB at low level): measured at 1 kHz,
+  −40 → −31.5, −10 → −8.8, −3 → −6.3 dBFS, and noise at −60 → −69.5 dBFS. Peaks stay close to the dry
+  level, so the TX level calibration still holds. With *Mute listening while transmitting* on, the whole RX
   chain (capture included) is closed during TX and reopened with a short fade-in after `tailMs + 400 ms`
   (`rxGen` discards a `startRx()` overtaken by a newer one); with it off, the chain stays open.
   The notches/low-pass switch to all-pass / 20 kHz when the USB whistle filter is off.
-- **TX**: `getUserMedia(PC mic)` → mic gain (0 during T-CALL) ┐
+- **TX**: `getUserMedia(PC mic)` → mic gain (0 during T-CALL) → voice enhancer ┐
   `OscillatorNode 1750 Hz` → tone gain (0.35 during T-CALL) ┴→ level (dB) → PTT gate → `AudioContext({ sinkId: interface })`.
   The meter shows the mic level *before* attenuation.
 - Each chain uses its own `AudioContext` so that each can target a different output device.

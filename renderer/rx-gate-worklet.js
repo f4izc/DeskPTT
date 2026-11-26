@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright 2026 Stephane Tauziede (F4IZC)
-// DeskPTT — porte de bruit de la réception (AudioWorklet, fil audio).
+// DeskPTT — porte de bruit de la réception (AudioWorklet, fil audio). Sert
+// aussi d'expandeur doux à l'émission (« Amélioration de la voix », paramètre floor).
 //
 // Coupe le souffle de fond quand le poste ne reçoit rien : la porte s'ouvre dès
 // que la crête du signal dépasse le seuil, reste ouverte un court instant
@@ -19,6 +20,9 @@ class RxGate extends AudioWorkletProcessor {
     return [
       { name: 'threshold', defaultValue: -45, minValue: -90, maxValue: 0, automationRate: 'k-rate' },
       { name: 'enabled', defaultValue: 0, minValue: 0, maxValue: 1, automationRate: 'k-rate' },
+      // Gain porte fermée, en dB : −120 = coupure (réception) ; −10 = simple
+      // atténuation du bruit entre les mots (expandeur de l'amélioration de la voix).
+      { name: 'floor', defaultValue: -120, minValue: -120, maxValue: 0, automationRate: 'k-rate' },
     ];
   }
 
@@ -44,6 +48,7 @@ class RxGate extends AudioWorkletProcessor {
     const enabled = params.enabled[0] >= 0.5;
     const openLin = Math.pow(10, params.threshold[0] / 20);
     const closeLin = Math.pow(10, (params.threshold[0] - HYSTERESIS_DB) / 20);
+    const floorLin = params.floor[0] <= -120 ? 0 : Math.pow(10, params.floor[0] / 20);
     const n = input[0].length;
     for (let i = 0; i < n; i++) {
       // Détecteur de crête (tous canaux) : montée immédiate, descente rapide.
@@ -63,7 +68,7 @@ class RxGate extends AudioWorkletProcessor {
         this.holdLeft--; // entre les deux seuils : on garde l'état, le maintien s'écoule
       }
 
-      const target = this.open ? 1 : 0;
+      const target = this.open ? 1 : floorLin;
       this.gain += (target - this.gain) * (target > this.gain ? this.kAttack : this.kRelease);
       for (let c = 0; c < output.length; c++) {
         const src = input[Math.min(c, input.length - 1)];
