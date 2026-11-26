@@ -6,7 +6,7 @@
 [![Platform: Windows 10/11](https://img.shields.io/badge/Platform-Windows_10%2F11_x64-0078D6)](#download)
 [![macOS: planned](https://img.shields.io/badge/macOS-planned-lightgrey)](#download)
 
-*Works with any USB audio interface for radio that keys PTT through a COM port or a CM108 GPIO pin.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
+*Works with most USB audio interfaces for radio that key PTT through a COM port or a CM108 GPIO pin.* — 🌐 **Website: [deskptt.f4izc.com](https://deskptt.f4izc.com/)**
 
 ![DeskPTT, advanced view](site/img/advanced.png)
 
@@ -109,7 +109,7 @@ guarantee of audio quality: see [noise and whistles](#noise-and-whistles) below 
 | Transceiver | Icom ID-5200 | Through the interface | ✅ Tested OK |
 | Transceiver | Icom ID-52 Plus | Through the interface | ✅ Tested OK |
 
-DeskPTT is not specific to this hardware: any interface built the same way (USB sound card plus a COM
+DeskPTT is not specific to this hardware: most interfaces built the same way (USB sound card plus a COM
 port line or a CM108-type GPIO) should work.
 
 ### Noise and whistles
