@@ -21,8 +21,8 @@
 >   or through a **GPIO pin of the sound chip itself** (CM108/CM119, SSS1621/1623, AIOC — no COM port needed).
 >   Without PTT keying, switch DeskPTT to **Radio VOX** mode and let the radio's VOX key the transmitter.
 
-DeskPTT turns your Windows PC into a desk microphone and speaker for your VHF/UHF FM transceiver.
-Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
+DeskPTT turns your PC into a multi-function headset mic for your FM rig, mobile or handheld, and works
+with almost any audio interface. Plug in your interface, pick your audio devices, and you're on the air — no extra hand mic needed.
 
 - **Receive**: route the radio audio to your speakers or headset, with volume control and a filter against USB whistle.
 - **Transmit**: use your PC microphone with noise reduction and adjustable level to the radio.
